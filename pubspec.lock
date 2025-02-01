@@ -57,6 +57,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.19.0"
+  crypto:
+    dependency: transitive
+    description:
+      name: crypto
+      sha256: "1e445881f28f22d6140f181e07737b22f1e099a5e1ff94b0af2f9e4a463f4855"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.6"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -65,6 +73,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.8"
+  device_frame:
+    dependency: transitive
+    description:
+      name: device_frame
+      sha256: d031a06f5d6f4750009672db98a5aa1536aa4a231713852469ce394779a23d75
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0"
+  device_preview_plus:
+    dependency: "direct main"
+    description:
+      name: device_preview_plus
+      sha256: caee6de21c24f5b229c792e29b3caf409c6448c376a86899ec999bd2f2205fb9
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.5"
   equatable:
     dependency: "direct main"
     description:
@@ -118,6 +142,11 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.0"
+  flutter_localizations:
+    dependency: transitive
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   flutter_svg:
     dependency: "direct main"
     description:
@@ -136,6 +165,22 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  freezed_annotation:
+    dependency: transitive
+    description:
+      name: freezed_annotation
+      sha256: c2e2d632dd9b8a2b7751117abcfc2b4888ecfe181bd9fca7170d9ef02e595fe2
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.4"
+  google_fonts:
+    dependency: "direct main"
+    description:
+      name: google_fonts
+      sha256: b1ac0fe2832c9cc95e5e88b57d627c5e68c223b9657f4b96e1487aa9098c7b82
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.2.1"
   http:
     dependency: transitive
     description:
@@ -152,6 +197,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.2"
+  intl:
+    dependency: transitive
+    description:
+      name: intl
+      sha256: d6f56758b7d3014a48af9701c085700aac781a92a87a62b1333b46d8879661cf
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.19.0"
+  json_annotation:
+    dependency: transitive
+    description:
+      name: json_annotation
+      sha256: "1ce844379ca14835a50d2f019a3099f419082cfdd231cd86a142af94dd5c6bb1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.9.0"
   leak_tracker:
     dependency: transitive
     description:
@@ -232,6 +293,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
+  path_provider:
+    dependency: transitive
+    description:
+      name: path_provider
+      sha256: "50c5dd5b6e1aaf6fb3a78b33f6aa3afca52bf903a8a5298f53101fdaee55bbcd"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.5"
+  path_provider_android:
+    dependency: transitive
+    description:
+      name: path_provider_android
+      sha256: "4adf4fd5423ec60a29506c76581bc05854c55e3a0b72d35bb28d661c9686edf2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.15"
+  path_provider_foundation:
+    dependency: transitive
+    description:
+      name: path_provider_foundation
+      sha256: "4843174df4d288f5e29185bd6e72a6fbdf5a4a4602717eed565497429f179942"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.1"
   path_provider_linux:
     dependency: transitive
     description:
@@ -349,6 +434,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  smooth_page_indicator:
+    dependency: "direct main"
+    description:
+      name: smooth_page_indicator
+      sha256: "3b28b0c545fa67ed9e5997d9f9720d486f54c0c607e056a1094544e36934dff3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0+3"
   source_span:
     dependency: transitive
     description:
@@ -471,4 +564,4 @@ packages:
     version: "6.5.0"
 sdks:
   dart: ">=3.6.1 <4.0.0"
-  flutter: ">=3.24.0"
+  flutter: ">=3.27.3"
