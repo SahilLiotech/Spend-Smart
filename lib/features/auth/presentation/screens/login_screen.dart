@@ -28,6 +28,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
+    final textFieldWidth = width * 0.9;
     return Scaffold(
       backgroundColor: CustomColors.secondaryColor,
       body: SingleChildScrollView(
@@ -41,11 +43,13 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             SizedBox(height: 10),
             AuthTextFieldWidget(
+              width: textFieldWidth,
               textHeading: AppString.emailAddress,
               lableText: AppString.enterEmailAddress,
               controller: emailController,
             ),
             AuthTextFieldWidget(
+              width: textFieldWidth,
               textHeading: AppString.password,
               lableText: AppString.enterPassword,
               controller: passwordController,
@@ -57,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Align(
               alignment: Alignment.centerRight,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                padding: const EdgeInsets.symmetric(horizontal: 18.0),
                 child: GestureDetector(
                   onTap: () {},
                   child: CustomText(
@@ -75,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Center(
               child: ButtonWidget(
                 onTap: () {},
-                buttonWidth: MediaQuery.sizeOf(context).width * 0.9,
+                buttonWidth: textFieldWidth,
                 buttonText: AppString.login,
                 buttonRadius: 6,
               ),
@@ -86,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             Center(
               child: GoogleButtonWidget(
-                width: MediaQuery.sizeOf(context).width * 0.9,
+                width: textFieldWidth,
               ),
             ),
             const SizedBox(

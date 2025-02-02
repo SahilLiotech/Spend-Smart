@@ -32,6 +32,8 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
+    final textFieldWidth = width * 0.9;
     return Scaffold(
       backgroundColor: CustomColors.secondaryColor,
       body: SingleChildScrollView(
@@ -45,16 +47,19 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
             SizedBox(height: 10),
             AuthTextFieldWidget(
+              width: textFieldWidth,
               textHeading: AppString.userName,
               lableText: AppString.enterUserName,
               controller: userNameController,
             ),
             AuthTextFieldWidget(
+              width: textFieldWidth,
               textHeading: AppString.emailAddress,
               lableText: AppString.enterEmailAddress,
               controller: emailController,
             ),
             AuthTextFieldWidget(
+              width: textFieldWidth,
               textHeading: AppString.password,
               lableText: AppString.enterPassword,
               controller: passwordController,
@@ -64,6 +69,7 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
             ),
             AuthTextFieldWidget(
+              width: textFieldWidth,
               textHeading: AppString.confirmPassword,
               lableText: AppString.enterConfirmPassword,
               controller: confirmPasswordController,
@@ -75,7 +81,7 @@ class _SignupScreenState extends State<SignupScreen> {
             Center(
               child: ButtonWidget(
                 onTap: () {},
-                buttonWidth: MediaQuery.sizeOf(context).width * 0.9,
+                buttonWidth: textFieldWidth,
                 buttonText: AppString.signUp,
                 buttonRadius: 6,
               ),
@@ -86,7 +92,7 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
             Center(
               child: GoogleButtonWidget(
-                width: MediaQuery.sizeOf(context).width * 0.9,
+                width: textFieldWidth,
               ),
             ),
             const SizedBox(

@@ -9,6 +9,7 @@ class AuthTextFieldWidget extends StatelessWidget {
   final double borderRadius;
   final bool isPassword;
   final Icon? icon;
+  final double width;
 
   final TextEditingController controller;
   const AuthTextFieldWidget({
@@ -19,30 +20,33 @@ class AuthTextFieldWidget extends StatelessWidget {
     this.borderRadius = 4.0,
     this.icon,
     this.isPassword = false,
+    this.width = 300,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CustomText(
-            text: textHeading,
-            color: CustomColors.blackColor,
-          ),
-          const SizedBox(
-            height: 8,
-          ),
-          CustomTextField(
-            labelText: lableText,
-            isPassword: isPassword,
-            controller: controller,
-            borderRadius: borderRadius,
-            icon: icon,
-          )
-        ],
+    return Center(
+      child: SizedBox(
+        width: width,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CustomText(
+              text: textHeading,
+              color: CustomColors.blackColor,
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            CustomTextField(
+              labelText: lableText,
+              isPassword: isPassword,
+              controller: controller,
+              borderRadius: borderRadius,
+              icon: icon,
+            )
+          ],
+        ),
       ),
     );
   }
