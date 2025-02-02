@@ -1,5 +1,7 @@
 import 'package:device_preview_plus/device_preview_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:spend_smart/features/onboarding/presentation/cubit/onboarding_cubit.dart';
 import 'package:spend_smart/features/onboarding/presentation/screens/onboarding_screen.dart';
 
 void main() {
@@ -9,11 +11,15 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return DevicePreview(builder: (context) {
-      return MaterialApp(
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<OnboardingCubit>(
+          create: (BuildContext context) => OnboardingCubit(),
+        ),
+      ],
+      child: MaterialApp(
         title: 'Flutter Demo',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -21,7 +27,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         home: const OnboardingScreen(),
-      );
-    });
+      ),
+    );
   }
 }

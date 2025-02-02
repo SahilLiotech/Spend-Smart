@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:spend_smart/core/utils/button_widget.dart';
 import 'package:spend_smart/core/utils/colors.dart';
+import 'package:spend_smart/core/utils/string.dart';
 import 'package:spend_smart/core/utils/text_widget.dart';
+import 'package:spend_smart/features/onboarding/presentation/cubit/onboarding_cubit.dart';
 
 class OnBoardingWidget extends StatefulWidget {
   final int screenIndex;
   final String title;
   final String subtitle;
   final String imageName;
+  final PageController controller;
   const OnBoardingWidget(
       {super.key,
       required this.screenIndex,
       required this.title,
       required this.subtitle,
-      required this.imageName});
+      required this.imageName,
+      required this.controller});
 
   @override
   State<OnBoardingWidget> createState() => _OnBoardingWidgetState();
@@ -48,16 +54,18 @@ class _OnBoardingWidgetState extends State<OnBoardingWidget> {
 
               if (widget.screenIndex != 2)
                 Positioned(
-                  top: 15,
-                  right: 10,
+                  top: 20,
+                  right: 20,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      context.read<OnboardingCubit>().skipScreen();
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: CustomColors.primaryColor,
                       foregroundColor: CustomColors.whiteColor,
                     ),
                     child: CustomText(
-                      text: "Skip",
+                      text: AppString.skip,
                       fontSize: 15,
                     ),
                   ),
@@ -65,29 +73,46 @@ class _OnBoardingWidgetState extends State<OnBoardingWidget> {
             ],
           ),
           Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              spacing: 10,
-              children: [
-                CustomText(
-                  text: widget.title,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                ),
-                CustomText(
-                  text: widget.subtitle,
-                  fontSize: 14,
-                ),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                spacing: 15,
+                children: [
+                  CustomText(
+                    textAlign: TextAlign.center,
+                    text: widget.title,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                  ),
+                  CustomText(
+                    textAlign: TextAlign.center,
+                    text: widget.subtitle,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 16,
+                  ),
+                ],
+              ),
             ),
           ),
-          SizedBox(
-            height: 80,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: _getButtonAlignment(),
-                children: _getBottomButtons(),
+          SmoothPageIndicator(
+              controller: widget.controller,
+              count: 3,
+              effect: ScaleEffect(
+                activeDotColor: CustomColors.whiteColor,
+                scale: 1.5,
+                spacing: 15,
+                dotColor: Colors.grey.shade400,
+              )),
+          Expanded(
+            child: SizedBox(
+              height: 80,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: _getButtonAlignment(),
+                  children: _getBottomButtons(),
+                ),
               ),
             ),
           ),
@@ -107,18 +132,24 @@ class _OnBoardingWidgetState extends State<OnBoardingWidget> {
     if (widget.screenIndex == 0) {
       return [
         GestureDetector(
-          onTap: () {},
+          onTap: () {
+            context.read<OnboardingCubit>().nextScreen(widget.screenIndex);
+          },
           child: SvgPicture.asset("assets/images/onboarding_next_icon.svg"),
         ),
       ];
     } else if (widget.screenIndex == 1) {
       return [
         GestureDetector(
-          onTap: () {},
+          onTap: () {
+            context.read<OnboardingCubit>().previosScreen(widget.screenIndex);
+          },
           child: SvgPicture.asset("assets/images/onboarding_previous_icon.svg"),
         ),
         GestureDetector(
-          onTap: () {},
+          onTap: () {
+            context.read<OnboardingCubit>().nextScreen(widget.screenIndex);
+          },
           child: SvgPicture.asset("assets/images/onboarding_next_icon.svg"),
         ),
       ];
@@ -126,7 +157,7 @@ class _OnBoardingWidgetState extends State<OnBoardingWidget> {
       return [
         ButtonWidget(
           onTap: () {},
-          buttonText: "Get Started",
+          buttonText: AppString.getStarted,
           fontColor: CustomColors.primaryColor,
           backgroundColor: CustomColors.whiteColor,
         ),
