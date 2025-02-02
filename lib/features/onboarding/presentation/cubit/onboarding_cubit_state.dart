@@ -17,3 +17,5 @@ final class OnboardingCubitUpdated extends OnboardingCubitState {
   @override
   List<Object> get props => [screenIndex];
 }
+
+final class OnboardingNavigation extends OnboardingCubitState {}

@@ -8,4 +8,5 @@ class CustomColors {
   static const Color whiteColor = Color(0XFFFFFFFF);
   static const Color blackColor = Color(0XFF000000);
   static const Color dashBoardColor = Color(0XFF314394);
+  static const Color hintTextColor = Color(0XFF979696);
 }

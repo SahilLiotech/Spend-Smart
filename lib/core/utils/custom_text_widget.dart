@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:spend_smart/core/utils/colors.dart';
+import 'package:spend_smart/core/utils/custom_colors.dart';
 
 class CustomText extends StatelessWidget {
   final String text;

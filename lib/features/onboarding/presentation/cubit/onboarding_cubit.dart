@@ -11,8 +11,8 @@ class OnboardingCubit extends Cubit<OnboardingCubitState> {
     if (currentIndex < 2) {
       controller.animateToPage(
         currentIndex + 1,
-        duration: const Duration(milliseconds: 700),
-        curve: Curves.easeIn,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.ease,
       );
       emit(OnboardingCubitUpdated(screenIndex: currentIndex + 1));
     }
@@ -22,8 +22,8 @@ class OnboardingCubit extends Cubit<OnboardingCubitState> {
     if (currentIndex > 0) {
       controller.animateToPage(
         currentIndex - 1,
-        duration: const Duration(milliseconds: 700),
-        curve: Curves.easeIn,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.ease,
       );
       emit(OnboardingCubitUpdated(screenIndex: currentIndex - 1));
     }
@@ -31,8 +31,16 @@ class OnboardingCubit extends Cubit<OnboardingCubitState> {
 
   void skipScreen() {
     if (controller.page != 2) {
-      controller.jumpToPage(2);
+      controller.animateToPage(
+        2,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.ease,
+      );
       emit(OnboardingCubitUpdated(screenIndex: 2));
     }
+  }
+
+  void navigateToLogin() {
+    emit(OnboardingNavigation());
   }
 }
