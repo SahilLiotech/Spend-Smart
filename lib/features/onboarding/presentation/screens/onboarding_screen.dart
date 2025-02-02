@@ -33,6 +33,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
     return BlocListener<OnboardingCubit, OnboardingCubitState>(
       listener: (context, state) {
         if (state is OnboardingNavigation) {
@@ -79,7 +80,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             bottomSheet: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               height: 120,
-              width: MediaQuery.of(context).size.width,
+              width: width,
               color: CustomColors.primaryColor,
               child: Column(
                 spacing: 20,
