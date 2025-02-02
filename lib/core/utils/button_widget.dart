@@ -40,6 +40,7 @@ class ButtonWidget extends StatelessWidget {
           text: buttonText,
           fontSize: buttonTextSize,
           color: fontColor,
+          fontWeight: FontWeight.w700,
         ),
       ),
     );

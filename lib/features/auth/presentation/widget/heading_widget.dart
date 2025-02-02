@@ -26,11 +26,13 @@ class HeadingWidget extends StatelessWidget {
               children: [
                 CustomText(
                   text: title,
+                  textAlign: TextAlign.center,
                   fontWeight: FontWeight.w700,
                   fontSize: 24,
                 ),
                 CustomText(
                   text: subtitle,
+                  textAlign: TextAlign.center,
                   fontWeight: FontWeight.w400,
                   fontSize: 18,
                 ),
