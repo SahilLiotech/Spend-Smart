@@ -30,11 +30,14 @@ class HeadingWidget extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                   fontSize: 24,
                 ),
-                CustomText(
-                  text: subtitle,
-                  textAlign: TextAlign.center,
-                  fontWeight: FontWeight.w400,
-                  fontSize: 18,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CustomText(
+                    text: subtitle,
+                    textAlign: TextAlign.center,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 18,
+                  ),
                 ),
               ],
             ),

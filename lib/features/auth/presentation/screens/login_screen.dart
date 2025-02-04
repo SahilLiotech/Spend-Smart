@@ -78,7 +78,10 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             Center(
               child: ButtonWidget(
-                onTap: () {},
+                onTap: () {
+                  debugPrint(
+                      "VALUE OF CONTROLLER ${emailController.text} ${passwordController.text}");
+                },
                 buttonWidth: textFieldWidth,
                 buttonText: AppString.login,
                 buttonRadius: 6,

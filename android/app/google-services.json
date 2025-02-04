@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "573132934413",
+    "project_id": "spend-smart-d87bb",
+    "storage_bucket": "spend-smart-d87bb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:573132934413:android:7bd2c7c6f3cbd0a4b7b444",
+        "android_client_info": {
+          "package_name": "com.example.spend_smart"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtrkGmCEOZXgBxuwXFJw80qKobN_fs9tU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
