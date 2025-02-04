@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:spend_smart/core/utils/custom_text_widget.dart';
+import 'package:spend_smart/core/utils/widgets/custom_text_widget.dart';
 
 class HeadingWidget extends StatelessWidget {
   final String title;

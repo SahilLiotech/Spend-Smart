@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:spend_smart/core/utils/button_widget.dart';
+import 'package:spend_smart/core/utils/widgets/button_widget.dart';
 import 'package:spend_smart/core/utils/custom_colors.dart';
 import 'package:spend_smart/core/utils/string.dart';
 import 'package:spend_smart/features/onboarding/presentation/cubit/onboarding_cubit.dart';

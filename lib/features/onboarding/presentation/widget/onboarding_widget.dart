@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spend_smart/core/utils/custom_colors.dart';
 import 'package:spend_smart/core/utils/string.dart';
-import 'package:spend_smart/core/utils/custom_text_widget.dart';
+import 'package:spend_smart/core/utils/widgets/custom_text_widget.dart';
 import 'package:spend_smart/features/onboarding/presentation/cubit/onboarding_cubit.dart';
 
 class OnBoardingWidget extends StatefulWidget {
