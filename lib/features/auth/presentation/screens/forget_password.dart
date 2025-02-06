@@ -4,7 +4,9 @@ import 'package:spend_smart/core/utils/string.dart';
 import 'package:spend_smart/core/utils/widgets/button_widget.dart';
 import 'package:spend_smart/core/utils/widgets/custom_text_widget.dart';
 import 'package:spend_smart/features/auth/presentation/widget/auth_textfield_widget.dart';
-import 'package:spend_smart/features/auth/presentation/widget/heading_widget.dart';
+import 'package:spend_smart/features/auth/presentation/widget/lottie_heading_widet.dart';
+import 'package:spend_smart/features/auth/presentation/widget/or_divider_widget.dart';
+import 'package:spend_smart/features/auth/presentation/widget/password_sent_confirmation_dialog.dart';
 
 class ForgetPasswordScreen extends StatefulWidget {
   const ForgetPasswordScreen({super.key});
@@ -46,7 +48,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const LottieHeadingWidget(
-              lottieAsset: "assets/images/forget_password_lottie.json",
+              lottieAsset: "assets/lottie/forget_password_lottie.json",
             ),
             const SizedBox(height: 10),
             CustomText(
@@ -64,17 +66,29 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
               width: MediaQuery.sizeOf(context).width * 0.9,
             ),
             ButtonWidget(
-              onTap: () {},
+              onTap: () {
+                showDialog(
+                    barrierDismissible: false,
+                    context: context,
+                    builder: (context) =>
+                        ResetPassWordConfirmationDialog(onResendEmail: () {
+                          Navigator.pop(context);
+                        }, onBackToLogin: () {
+                          Navigator.pop(context);
+                        }));
+              },
               buttonText: AppString.resetPassword,
             ),
-            GestureDetector(
-                onTap: () => Navigator.pop(context),
-                child: CustomText(
-                  text: AppString.backToLogin,
-                  color: CustomColors.primaryColor,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 18,
-                )),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: OrDividerWidget(),
+            ),
+            ButtonWidget(
+              onTap: () => Navigator.pop(context),
+              buttonText: AppString.backToLogin,
+              fontColor: CustomColors.blackColor,
+              backgroundColor: CustomColors.whiteColor,
+            ),
             const SizedBox(height: 40),
           ],
         ),

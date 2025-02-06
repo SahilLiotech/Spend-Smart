@@ -21,6 +21,11 @@ class AppString {
   static const String forgetPasswordHeading =
       "Enter Your Email to Receive a Reset Link";
   static const String backToLogin = "Back to Login";
+  static const String linkSentToEmail =
+      "We've sent a password reset link to your email. \n Please check your inbox and follow the instructions to reset your password.";
+  static const String emailNotRegistered =
+      "The email you entered is not registered with us. \n Please try again with a different email.";
+  static const String resendEmail = "Resend Email";
   static const String login = "Login";
   static const String signUp = "Sign Up";
   static const String forgotPassword = "Forgot Password?";
