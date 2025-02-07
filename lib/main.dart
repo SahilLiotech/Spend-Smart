@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
               colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
               useMaterial3: true,
             ),
-            initialRoute: Routes.forgetPassword,
+            initialRoute: Routes.signup,
             onGenerateRoute: AppRouter.generateRoute,
             home: const OnboardingScreen(),
           );
