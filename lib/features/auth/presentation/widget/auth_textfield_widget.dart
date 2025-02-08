@@ -5,10 +5,14 @@ import 'package:spend_smart/core/utils/widgets/custom_text_widget.dart';
 
 class AuthTextFieldWidget extends StatelessWidget {
   final String textHeading;
-  final String lableText;
+  final String labelText;
   final double borderRadius;
   final bool isPassword;
-  final Icon? icon;
+  final IconButton? icon;
+  final FocusNode? focusNode;
+  final FocusNode? nextFocusNode;
+  final FormFieldValidator<String>? validator;
+
   final double width;
 
   final TextEditingController controller;
@@ -16,10 +20,13 @@ class AuthTextFieldWidget extends StatelessWidget {
     super.key,
     required this.textHeading,
     required this.controller,
-    this.lableText = "",
+    this.labelText = "",
     this.borderRadius = 4.0,
     this.icon,
     this.isPassword = false,
+    this.focusNode,
+    this.nextFocusNode,
+    this.validator,
     this.width = 300,
   });
 
@@ -39,11 +46,14 @@ class AuthTextFieldWidget extends StatelessWidget {
               height: 8,
             ),
             CustomTextField(
-              labelText: lableText,
+              labelText: labelText,
               isPassword: isPassword,
               controller: controller,
+              focusNode: focusNode,
+              validator: validator,
+              nextFocusNode: nextFocusNode,
               borderRadius: borderRadius,
-              icon: icon,
+              icon: icon ,
             )
           ],
         ),

@@ -1,11 +1,13 @@
-import 'package:device_preview_plus/device_preview_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spend_smart/config/routes/app_router.dart';
 import 'package:spend_smart/config/routes/routes.dart';
 import 'package:spend_smart/core/di/service_locator.dart';
-import 'package:spend_smart/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:spend_smart/features/auth/presentation/bloc/forget_password_bloc/forget_password_bloc.dart';
+import 'package:spend_smart/features/auth/presentation/bloc/login_bloc/login_bloc.dart';
+import 'package:spend_smart/features/auth/presentation/bloc/password_visiblity_cubit.dart';
+import 'package:spend_smart/features/auth/presentation/bloc/signup_bloc/signup_bloc.dart';
 import 'package:spend_smart/features/onboarding/presentation/cubit/onboarding_cubit.dart';
 import 'package:spend_smart/features/onboarding/presentation/screens/onboarding_screen.dart';
 import 'package:spend_smart/firebase_options.dart';
@@ -33,24 +35,29 @@ class MyApp extends StatelessWidget {
         BlocProvider<OnboardingCubit>(
           create: (context) => OnboardingCubit(),
         ),
-        BlocProvider<AuthBloc>(
-          create: (context) => sl<AuthBloc>(),
+        BlocProvider<PasswordVisiblityCubit>(
+          create: (context) => PasswordVisiblityCubit(),
+        ),
+        BlocProvider<SignUpBloc>(
+          create: (context) => sl<SignUpBloc>(),
+        ),
+        BlocProvider<LoginBloc>(
+          create: (context) => sl<LoginBloc>(),
+        ),
+        BlocProvider<ForgetPasswordBloc>(
+          create: (context) => sl<ForgetPasswordBloc>(),
         ),
       ],
-      child: DevicePreview(
-        builder: (context) {
-          return MaterialApp(
-            title: 'Spend Smart',
-            debugShowCheckedModeBanner: false,
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-              useMaterial3: true,
-            ),
-            initialRoute: Routes.signup,
-            onGenerateRoute: AppRouter.generateRoute,
-            home: const OnboardingScreen(),
-          );
-        },
+      child: MaterialApp(
+        title: 'Spend Smart',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        initialRoute: Routes.signup,
+        onGenerateRoute: AppRouter.generateRoute,
+        home: const OnboardingScreen(),
       ),
     );
   }

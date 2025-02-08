@@ -11,6 +11,7 @@ class ButtonWidget extends StatelessWidget {
   final double buttonWidth;
   final double buttonHeight;
   final double buttonRadius;
+  final bool isLoading;
 
   const ButtonWidget(
       {super.key,
@@ -21,7 +22,8 @@ class ButtonWidget extends StatelessWidget {
       this.fontColor = CustomColors.whiteColor,
       this.buttonWidth = 200,
       this.buttonHeight = 50,
-      this.buttonRadius = 12});
+      this.buttonRadius = 12,
+      this.isLoading = false});
 
   @override
   Widget build(BuildContext context) {
@@ -29,14 +31,14 @@ class ButtonWidget extends StatelessWidget {
       width: buttonWidth,
       height: buttonHeight,
       child: ElevatedButton(
-        onPressed: onTap,
+        onPressed: isLoading ? null : onTap,
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(buttonRadius),
           ),
         ),
-        child: CustomText(
+        child: isLoading ? CircularProgressIndicator() : CustomText(
           text: buttonText,
           fontSize: buttonTextSize,
           color: fontColor,

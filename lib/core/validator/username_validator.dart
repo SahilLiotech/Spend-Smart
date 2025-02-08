@@ -1,5 +1,5 @@
-userNameValidator(String value) {
-  if (value.isEmpty) {
+String? userNameValidator(String? value) {
+  if (value == null || value.isEmpty) {
     return 'Username can\'t be empty';
   }
   if (value.length < 3) {

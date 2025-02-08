@@ -62,7 +62,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
             AuthTextFieldWidget(
               textHeading: AppString.emailAddress,
               controller: resetPasswordController,
-              lableText: AppString.enterEmailAddress,
+              labelText: AppString.enterEmailAddress,
               width: MediaQuery.sizeOf(context).width * 0.9,
             ),
             ButtonWidget(

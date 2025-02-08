@@ -11,25 +11,41 @@ class CustomTextField extends StatelessWidget {
   final Color borderColor;
   final double borderRadius;
   final bool isPassword;
-  final Icon? icon;
-  const CustomTextField(
-      {super.key,
-      required this.controller,
-      this.hintText = "",
-      this.hintTextColor = CustomColors.hintTextColor,
-      this.labelText = "",
-      this.borderColor = CustomColors.primaryColor,
-      this.borderRadius = 4,
-      this.isPassword = false,
-      this.icon});
+  final FocusNode? focusNode;
+  final FocusNode? nextFocusNode;
+  final IconButton? icon;
+  final FormFieldValidator<String>? validator;
+
+  const CustomTextField({
+    super.key,
+    required this.controller,
+    this.hintText = "",
+    this.hintTextColor = CustomColors.hintTextColor,
+    this.labelText = "",
+    this.borderColor = CustomColors.primaryColor,
+    this.borderRadius = 4,
+    this.isPassword = false,
+    this.focusNode,
+    this.nextFocusNode,
+    this.icon,
+    this.validator,
+  });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
       obscureText: isPassword,
+      focusNode: focusNode,
+      onFieldSubmitted: (_) {
+        if (nextFocusNode != null) {
+          FocusScope.of(context).requestFocus(nextFocusNode);
+        }
+      },
+      validator: validator,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       decoration: InputDecoration(
-        suffix: icon,
+        suffixIcon: icon,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(borderRadius),
           borderSide: BorderSide(color: borderColor),
