@@ -9,21 +9,26 @@ class AuthRepositoryImpl extends AuthRepository {
   @override
   Future<UserModel> signUpWithEmailAndPassword(
       String userName, String email, String password) async {
-    final userCredential = await firebaseService.auth
-        .createUserWithEmailAndPassword(email: email, password: password);
-    final user = UserModel(
-      id: userCredential.user!.uid,
-      email: userCredential.user!.email!,
-      name: userName,
-      image: '',
-    );
+     try {
+      final userCredential = await firebaseService.auth
+          .createUserWithEmailAndPassword(email: email, password: password);
 
-    await firebaseService.firestore
-        .collection('users')
-        .doc(user.id)
-        .set(user.toMap());
+      final user = UserModel(
+        id: userCredential.user!.uid,
+        email: userCredential.user!.email!,
+        name: userName,
+        image: '',
+      );
 
-    return user;
+      await firebaseService.firestore.collection('users').doc(user.id).set(user.toMap());
+
+      return user;
+    } catch (e) {
+      if (firebaseService.auth.currentUser != null) {
+        await firebaseService.auth.currentUser!.delete();
+      }
+      throw Exception("Sign-up failed: $e");
+    }
   }
 
   @override
