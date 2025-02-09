@@ -1,4 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:spend_smart/core/error/exception.dart';
 import 'package:spend_smart/core/services/firebase_service.dart';
+import 'package:spend_smart/core/utils/string.dart';
+import 'package:spend_smart/features/auth/data/auth_error_mapper.dart';
 import 'package:spend_smart/features/auth/data/user_model.dart';
 import 'package:spend_smart/features/auth/domain/auth_repository.dart';
 
@@ -9,9 +14,15 @@ class AuthRepositoryImpl extends AuthRepository {
   @override
   Future<UserModel> signUpWithEmailAndPassword(
       String userName, String email, String password) async {
-     try {
+    try {
       final userCredential = await firebaseService.auth
-          .createUserWithEmailAndPassword(email: email, password: password);
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          throw TimeoutException(AppString.requestTimeout);
+        },
+      );
 
       final user = UserModel(
         id: userCredential.user!.uid,
@@ -20,42 +31,92 @@ class AuthRepositoryImpl extends AuthRepository {
         image: '',
       );
 
-      await firebaseService.firestore.collection('users').doc(user.id).set(user.toMap());
+      await firebaseService.firestore
+          .collection('users')
+          .doc(user.id)
+          .set(user.toMap());
 
       return user;
+    } on FirebaseAuthException catch (e) {
+      throw AuthExecption(AuthErrorMapper.map(e.code));
+    } on TimeoutException {
+      throw AuthExecption(AppString.requestTimeout);
+    } on FirebaseException catch (e) {
+      throw AuthExecption(AuthErrorMapper.map(e.code));
     } catch (e) {
       if (firebaseService.auth.currentUser != null) {
         await firebaseService.auth.currentUser!.delete();
       }
-      throw Exception("Sign-up failed: $e");
+      throw AuthExecption(AppString.unexpectedError);
     }
   }
 
   @override
   Future<UserModel> signInWithEmailAndPassword(
       String email, String password) async {
-    final userCredential = await firebaseService.auth
-        .signInWithEmailAndPassword(email: email, password: password);
+    try {
+      final userCredential = await firebaseService.auth
+          .signInWithEmailAndPassword(email: email, password: password)
+          .timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          throw TimeoutException(AppString.requestTimeout);
+        },
+      );
 
-    final userDoc = await firebaseService.firestore
-        .collection('users')
-        .doc(userCredential.user!.uid)
-        .get();
-    return UserModel.fromMap(userDoc.data()!);
+      final userDoc = await firebaseService.firestore
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .get();
+      return UserModel.fromMap(userDoc.data()!);
+    } on FirebaseAuthException catch (e) {
+      debugPrint("error ::::: ${e.code}");
+      throw AuthExecption(AuthErrorMapper.map(e.code));
+    } on TimeoutException {
+      throw AuthExecption(AppString.requestTimeout);
+    } on FirebaseException catch (e) {
+      throw AuthExecption(AuthErrorMapper.map(e.code));
+    } catch (e) {
+      throw AuthExecption(AppString.unexpectedError);
+    }
   }
 
   @override
   Future<UserModel?> getUser() async {
-    final user = firebaseService.auth.currentUser;
-    if (user == null) return null;
-    final userDoc =
-        await firebaseService.firestore.collection('users').doc(user.uid).get();
-    return UserModel.fromMap(userDoc.data()!);
+    try {
+      final user = firebaseService.auth.currentUser;
+      if (user == null) return null;
+      final userDoc = await firebaseService.firestore
+          .collection('users')
+          .doc(user.uid)
+          .get()
+          .timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          throw TimeoutException(AppString.requestTimeout);
+        },
+      );
+      return UserModel.fromMap(userDoc.data()!);
+    } on FirebaseAuthException catch (e) {
+      throw AuthExecption(AuthErrorMapper.map(e.code));
+    } on TimeoutException {
+      throw AuthExecption(AppString.requestTimeout);
+    } on FirebaseException catch (e) {
+      throw AuthExecption(AuthErrorMapper.map(e.code));
+    } catch (e) {
+      throw AuthExecption(AppString.unexpectedError);
+    }
   }
 
   @override
   Future<void> sendPasswordResetEmail(String email) async {
-    await firebaseService.auth.sendPasswordResetEmail(email: email);
+    try {
+      await firebaseService.auth.sendPasswordResetEmail(email: email);
+    } on FirebaseException catch (e) {
+      throw AuthExecption(AuthErrorMapper.map(e.code));
+    } catch (e) {
+      throw AuthExecption(AppString.unexpectedError);
+    }
   }
 
   @override

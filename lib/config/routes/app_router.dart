@@ -3,7 +3,7 @@ import 'package:spend_smart/config/routes/routes.dart';
 import 'package:spend_smart/features/auth/presentation/screens/forget_password.dart';
 import 'package:spend_smart/features/auth/presentation/screens/login_screen.dart';
 import 'package:spend_smart/features/auth/presentation/screens/signup_screen.dart';
-import 'package:spend_smart/features/dashboard/presentation/screens/dashboard.dart';
+import 'package:spend_smart/features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'package:spend_smart/features/onboarding/presentation/screens/onboarding_screen.dart';
 
 class AppRouter {

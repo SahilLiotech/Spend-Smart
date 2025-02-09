@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:spend_smart/core/prefrences/apppref.dart';
 import 'package:spend_smart/core/utils/widgets/button_widget.dart';
 import 'package:spend_smart/core/utils/custom_colors.dart';
 import 'package:spend_smart/core/utils/string.dart';
@@ -47,6 +48,7 @@ class OnboardingBottomSheet extends StatelessWidget {
       return Center(
         child: ButtonWidget(
           onTap: () {
+            AppPref.setOnboardingDone(true);
             context.read<OnboardingCubit>().navigateToLogin();
           },
           buttonText: AppString.getStarted,

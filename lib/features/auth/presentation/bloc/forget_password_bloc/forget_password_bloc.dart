@@ -1,12 +1,14 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:spend_smart/core/error/exception.dart';
+import 'package:spend_smart/core/utils/string.dart';
 import 'package:spend_smart/features/auth/domain/auth_usecase.dart';
 
 part 'forget_password_event.dart';
 part 'forget_password_state.dart';
 
-
-class ForgetPasswordBloc extends Bloc<ForgetPasswordEvent, ForgetPasswordState> {
+class ForgetPasswordBloc
+    extends Bloc<ForgetPasswordEvent, ForgetPasswordState> {
   final SendPasswordResetEmailUseCase sendPasswordResetEmailUseCase;
 
   ForgetPasswordBloc({required this.sendPasswordResetEmailUseCase})
@@ -22,9 +24,12 @@ class ForgetPasswordBloc extends Bloc<ForgetPasswordEvent, ForgetPasswordState> 
         SendPasswordResetEmailParams(email: event.email),
       );
       emit(ForgetPasswordSuccess());
+    } on AuthExecption catch (e) {
+      emit(ForgetPasswordFailure(message: e.message));
+    } on TimeoutException {
+      emit(ForgetPasswordFailure(message: AppString.requestTimeout));
     } catch (e) {
-      emit(ForgetPasswordFailure(message: e.toString()));
+      emit(ForgetPasswordFailure(message: AppString.unexpectedError));
     }
   }
 }
-

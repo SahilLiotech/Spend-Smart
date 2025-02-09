@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:spend_smart/core/utils/custom_colors.dart';
+import 'package:spend_smart/core/utils/string.dart';
 import 'package:spend_smart/core/utils/widgets/custom_text_widget.dart';
 
 class OrDividerWidget extends StatelessWidget {
@@ -10,7 +11,7 @@ class OrDividerWidget extends StatelessWidget {
 
   const OrDividerWidget({
     super.key,
-    this.text = "OR",
+    this.text = AppString.or,
     this.dividerColor = CustomColors.blackColor,
     this.thickness = 1.0,
     this.textStyle,

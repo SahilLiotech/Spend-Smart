@@ -1,15 +1,17 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Apppref {
-  final SharedPreferences _preferences;
+class AppPref {
+  static late SharedPreferences _preferences;
 
-  Apppref(this._preferences);
+  static Future<void> init() async {
+    _preferences = await SharedPreferences.getInstance();
+  }
 
-  Future<bool> isOnboardingDone() async {
+  static bool isOnboardingDone() {
     return _preferences.getBool('isOnboardingDone') ?? false;
   }
 
-  Future<void> setOnboardingDone(bool value) async {
+  static Future<void> setOnboardingDone(bool value) async {
     await _preferences.setBool('isOnboardingDone', value);
   }
 }

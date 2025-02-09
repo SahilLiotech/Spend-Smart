@@ -10,14 +10,14 @@ import 'package:spend_smart/features/auth/presentation/bloc/signup_bloc/signup_b
 final sl = GetIt.instance; // Service Locator instance
 
 void serviceLocator() {
-  // ✅ Services
+  // Services
   sl.registerLazySingleton<FirebaseService>(() => FirebaseService());
 
-  // ✅ Repositories
+  // Repositories
   sl.registerLazySingleton<AuthRepository>(
       () => AuthRepositoryImpl(firebaseService: sl()));
 
-  // ✅ Use Cases
+  // Use Cases
   sl.registerLazySingleton<SignUpUseCase>(() => SignUpUseCase(repository: sl()));
   sl.registerLazySingleton<SignInUseCase>(() => SignInUseCase(repository: sl()));
   sl.registerLazySingleton<SignOutUseCase>(() => SignOutUseCase(repository: sl()));
@@ -25,7 +25,7 @@ void serviceLocator() {
   sl.registerLazySingleton<SendPasswordResetEmailUseCase>(
       () => SendPasswordResetEmailUseCase(repository: sl()));
 
-  // ✅ BLoCs
+  // BLoCs
   sl.registerFactory<SignUpBloc>(() => SignUpBloc(signUpUseCase: sl()));
   sl.registerFactory<LoginBloc>(() => LoginBloc(signInUseCase: sl()));
   sl.registerFactory<ForgetPasswordBloc>(

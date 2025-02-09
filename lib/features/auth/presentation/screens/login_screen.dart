@@ -47,10 +47,10 @@ class _LoginScreenState extends State<LoginScreen> {
       body: BlocConsumer<LoginBloc, LoginState>(
         listener: (context, state) {
           if (state is LoginFailure) {
-           CustomToast.showFailure(context, state.message);
+           CustomToast.showFailure(context, AppString.failure,state.message);
           }
           if(state is LoginSuccess){
-            CustomToast.showSuccess(context, "Login Successful");
+            CustomToast.showSuccess(context, AppString.success, AppString.loginSuccess);
             Navigator.pushNamed(context, Routes.dashboard);
           }
         },

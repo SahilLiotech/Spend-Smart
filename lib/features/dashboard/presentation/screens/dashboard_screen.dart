@@ -5,8 +5,10 @@ class DashBoardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text("DashBoard Screen"),
+    return Scaffold(
+      body:  const Center(
+        child: Text("DashBoard Screen"),
+      ),
     );
   }
 }

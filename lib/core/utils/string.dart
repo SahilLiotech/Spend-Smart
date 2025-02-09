@@ -25,6 +25,10 @@ class AppString {
       "We've sent a password reset link to your email. \n Please check your inbox and follow the instructions to reset your password.";
   static const String emailNotRegistered =
       "The email you entered is not registered with us. \n Please try again with a different email.";
+  static const String emailAlreadyRegistered =
+      "The email you entered is already registered with us. \n Please try again with a different email.";
+  static const String unexpectedError =
+      "An unexpected error occurred. Please try again.";
   static const String resendEmail = "Resend Email";
   static const String login = "Login";
   static const String signUp = "Sign Up";
@@ -42,4 +46,40 @@ class AppString {
   static const String enterUserName = "Enter User Name";
   static const String loginWithGoogle = "Login with Google";
   static const String or = "OR";
+  static const String success = "Success";
+  static const String failure = "Failure";
+  static const String signUpSuccess = "Sign Up Successfully";
+  static const String signUpFailure = "Sign Up Failed";
+  static const String loginSuccess = "Login Successfully";
+  static const String loginFailure = "Login Failed";
+
+  // Authentication error messages
+  static const String emailAlreadyInUse =
+      "This email is already registered. Please use a different email or try logging in.";
+  static const String invalidEmail = "The email address is badly formatted.";
+  static const String invalidCredential =
+      "Credentials are invalid. Please try again.";
+  static const String weakPassword =
+      "The password is too weak. Please use a stronger password.";
+  static const String userDisabled = "This user account has been disabled.";
+  static const String userNotFound = "No user found with this email address.";
+  static const String wrongPassword = "Incorrect password. Please try again.";
+  static const String tooManyRequests =
+      "Too many unsuccessful login attempts. Please try again later.";
+  static const String operationNotAllowed =
+      "This sign-in method is not enabled. Please contact support.";
+  static const String networkRequestFailed =
+      "Network error. Please check your internet connection.";
+  static const String requestTimeout =
+      "Request timed out. Please check your internet connection.";
+
+  // Form validation error messages
+  static const String confirmPasswordMismatch =
+      "Confirm Password must be the same as Password";
+  static const String emailRequired = "Email is required";
+  static const String invalidEmailFormat = "Invalid email";
+  static const String passwordRequired = "Password is required";
+  static const String passwordTooShort = "Must be at least 6 characters";
+  static const String passwordRequirements =
+      "Must include uppercase, lowercase, number & symbol";
 }

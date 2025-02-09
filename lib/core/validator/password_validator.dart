@@ -1,9 +1,11 @@
+import 'package:spend_smart/core/utils/string.dart';
+
 String? passwordValidator(String? value) {
-  if (value == null || value.isEmpty) return "Password is required";
-  if (value.length < 6) return "Must be at least 6 characters";
+  if (value == null || value.isEmpty) return AppString.passwordRequired;
+  if (value.length < 6) return AppString.passwordTooShort;
   if (!RegExp(r'^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{6,}$')
       .hasMatch(value)) {
-    return "Must include uppercase, lowercase, number & symbol";
+    return AppString.passwordRequirements;
   }
   return null;
 }

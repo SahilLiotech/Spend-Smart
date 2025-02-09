@@ -50,7 +50,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("Build");
     final width = MediaQuery.sizeOf(context).width;
     final textFieldWidth = width * 0.9;
     return Scaffold(
@@ -58,10 +57,10 @@ class _SignupScreenState extends State<SignupScreen> {
       body: BlocConsumer<SignUpBloc, SignUpState>(
         listener: (context, state) {
           if (state is SignUpFailure) {
-          CustomToast.showFailure(context, state.message);
+          CustomToast.showFailure(context, AppString.failure ,state.message);
           }
           if (state is SignUpSuccess) {
-            CustomToast.showSuccess(context, "Sign Up Successful");
+            CustomToast.showSuccess(context, AppString.success, AppString.signUpSuccess);
             Navigator.pushNamed(context, Routes.dashboard);
           }
         },
