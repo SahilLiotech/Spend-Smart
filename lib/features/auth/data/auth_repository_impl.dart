@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:spend_smart/core/error/exception.dart';
 import 'package:spend_smart/core/services/firebase_service.dart';
 import 'package:spend_smart/core/utils/string.dart';
@@ -70,7 +70,67 @@ class AuthRepositoryImpl extends AuthRepository {
           .get();
       return UserModel.fromMap(userDoc.data()!);
     } on FirebaseAuthException catch (e) {
-      debugPrint("error ::::: ${e.code}");
+      throw AuthExecption(AuthErrorMapper.map(e.code));
+    } on TimeoutException {
+      throw AuthExecption(AppString.requestTimeout);
+    } on FirebaseException catch (e) {
+      throw AuthExecption(AuthErrorMapper.map(e.code));
+    } catch (e) {
+      throw AuthExecption(AppString.unexpectedError);
+    }
+  }
+
+  @override
+  Future<UserModel> signInWithGoogle() async {
+    try {
+      GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) {
+        throw AuthExecption(AppString.googleSignInCancle);
+      }
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final userCredential =
+          await firebaseService.auth.signInWithCredential(credential).timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          throw TimeoutException(AppString.requestTimeout);
+        },
+      );
+
+      final user = userCredential.user;
+      if (user == null) {
+        throw AuthExecption(AppString.unexpectedError);
+      }
+
+      final userDoc = await firebaseService.firestore
+          .collection('users')
+          .doc(user.uid)
+          .get();
+
+      if (!userDoc.exists) {
+        final newUser = UserModel(
+          id: user.uid,
+          email: user.email!,
+          name: user.displayName!,
+          image: user.photoURL!,
+        );
+
+        await firebaseService.firestore
+            .collection('users')
+            .doc(user.uid)
+            .set(newUser.toMap());
+
+        return newUser;
+      }
+
+      return UserModel.fromMap(userDoc.data()!);
+    } on FirebaseAuthException catch (e) {
       throw AuthExecption(AuthErrorMapper.map(e.code));
     } on TimeoutException {
       throw AuthExecption(AppString.requestTimeout);

@@ -10,8 +10,9 @@ import 'package:spend_smart/core/validator/confirm_password_validator.dart';
 import 'package:spend_smart/core/validator/email_validator.dart';
 import 'package:spend_smart/core/validator/password_validator.dart';
 import 'package:spend_smart/core/validator/username_validator.dart';
-import 'package:spend_smart/features/auth/presentation/bloc/password_visiblity_cubit.dart';
+import 'package:spend_smart/features/auth/presentation/bloc/google_signin_bloc/google_signin_bloc.dart';
 import 'package:spend_smart/features/auth/presentation/bloc/signup_bloc/signup_bloc.dart';
+import 'package:spend_smart/features/auth/presentation/bloc/password_visiblity_cubit.dart';
 import 'package:spend_smart/features/auth/presentation/widget/auth_textfield_widget.dart';
 import 'package:spend_smart/features/auth/presentation/widget/google_button.dart';
 import 'package:spend_smart/features/auth/presentation/widget/heading_widget.dart';
@@ -25,191 +26,225 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  TextEditingController userNameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController confirmPasswordController = TextEditingController();
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  FocusNode userNameFocusNode = FocusNode();
-  FocusNode emailFocusNode = FocusNode();
-  FocusNode passwordFocusNode = FocusNode();
-  FocusNode confirmPasswordFocusNode = FocusNode();
+  final TextEditingController _userNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final FocusNode _userNameFocusNode = FocusNode();
+  final FocusNode _emailFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
+  final FocusNode _confirmPasswordFocusNode = FocusNode();
 
   @override
   void dispose() {
+    _userNameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    _userNameFocusNode.dispose();
+    _emailFocusNode.dispose();
+    _passwordFocusNode.dispose();
+    _confirmPasswordFocusNode.dispose();
     super.dispose();
-    userNameController.dispose();
-    emailController.dispose();
-    passwordController.dispose();
-    confirmPasswordController.dispose();
-    userNameFocusNode.dispose();
-    emailFocusNode.dispose();
-    passwordFocusNode.dispose();
-    confirmPasswordFocusNode.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.sizeOf(context).width;
-    final textFieldWidth = width * 0.9;
+    final width = MediaQuery.of(context).size.width * 0.9;
     return Scaffold(
       backgroundColor: CustomColors.secondaryColor,
-      body: BlocConsumer<SignUpBloc, SignUpState>(
-        listener: (context, state) {
-          if (state is SignUpFailure) {
-          CustomToast.showFailure(context, AppString.failure ,state.message);
-          }
-          if (state is SignUpSuccess) {
-            CustomToast.showSuccess(context, AppString.success, AppString.signUpSuccess);
-            Navigator.pushNamed(context, Routes.dashboard);
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<SignUpBloc, SignUpState>(
+            listener: (context, state) {
+              if (state is SignUpFailure) {
+                CustomToast.showFailure(
+                    context, AppString.failure, state.message);
+              } else if (state is SignUpSuccess) {
+                CustomToast.showSuccess(
+                    context, AppString.success, AppString.signUpSuccess);
+                Navigator.pushNamed(context, Routes.dashboard);
+              }
+            },
+          ),
+          BlocListener<GoogleSigninBloc, GoogleSigninState>(
+            listener: (context, state) {
+              if (state is GoogleSigninSuccess) {
+                CustomToast.showSuccess(
+                    context, AppString.success, AppString.loginSuccess);
+                Navigator.pushNamed(context, Routes.dashboard);
+              } else if (state is GoogleSigninFailure) {
+                CustomToast.showFailure(
+                    context, AppString.failure, state.message);
+              }
+            },
+          ),
+        ],
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              spacing: 15,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                HeadingWidget(
+                    title: AppString.signUp, subtitle: AppString.signupHeading),
+                _buildTextField(
+                    _userNameController,
+                    _userNameFocusNode,
+                    _emailFocusNode,
+                    AppString.userName,
+                    AppString.enterUserName,
+                    userNameValidator,
+                    width),
+                _buildTextField(
+                    _emailController,
+                    _emailFocusNode,
+                    _passwordFocusNode,
+                    AppString.emailAddress,
+                    AppString.enterEmailAddress,
+                    emailValidator,
+                    width),
+                _buildPasswordTextField(width),
+                _buildConfirmPasswordTextField(width),
+                const SizedBox(height: 5),
+                _buildSignupButton(width),
+                const Padding(
+                    padding: EdgeInsets.all(8.0), child: OrDividerWidget()),
+                _buildGoogleSignInButton(width),
+                const SizedBox(height: 1),
+                _buildLoginRedirect(),
+                const SizedBox(height: 10),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField(
+      TextEditingController controller,
+      FocusNode focusNode,
+      FocusNode? nextFocusNode,
+      String heading,
+      String label,
+      String? Function(String?) validator,
+      double width) {
+    return AuthTextFieldWidget(
+      width: width,
+      textHeading: heading,
+      focusNode: focusNode,
+      nextFocusNode: nextFocusNode,
+      labelText: label,
+      controller: controller,
+      validator: validator,
+    );
+  }
+
+  Widget _buildPasswordTextField(double width) {
+    return BlocBuilder<PasswordVisiblityCubit, bool>(
+      builder: (context, passwordHidden) {
+        return AuthTextFieldWidget(
+          width: width,
+          textHeading: AppString.password,
+          focusNode: _passwordFocusNode,
+          validator: passwordValidator,
+          labelText: AppString.enterPassword,
+          controller: _passwordController,
+          isPassword: passwordHidden,
+          icon: IconButton(
+            onPressed: () =>
+                context.read<PasswordVisiblityCubit>().toggleVisibility(),
+            icon:
+                Icon(passwordHidden ? Icons.visibility_off : Icons.visibility),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildConfirmPasswordTextField(double width) {
+    return BlocBuilder<PasswordVisiblityCubit, bool>(
+      builder: (context, passwordHidden) {
+        return AuthTextFieldWidget(
+          width: width,
+          textHeading: AppString.confirmPassword,
+          focusNode: _confirmPasswordFocusNode,
+          validator: (value) =>
+              confirmPasswordValidator(value, _passwordController.text),
+          labelText: AppString.enterPassword,
+          controller: _confirmPasswordController,
+          isPassword: passwordHidden,
+          icon: IconButton(
+            onPressed: () =>
+                context.read<PasswordVisiblityCubit>().toggleVisibility(),
+            icon:
+                Icon(passwordHidden ? Icons.visibility_off : Icons.visibility),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildSignupButton(double width) {
+    return Center(
+      child: ButtonWidget(
+        isLoading: context.watch<SignUpBloc>().state is SignUpLoading,
+        onTap: () {
+          if (_formKey.currentState!.validate()) {
+            BlocProvider.of<SignUpBloc>(context).add(
+              SignUpSubmitted(
+                userName: _userNameController.text.trim(),
+                email: _emailController.text.trim(),
+                password: _passwordController.text,
+              ),
+            );
           }
         },
+        buttonWidth: width,
+        buttonText: AppString.signUp,
+        buttonRadius: 6,
+      ),
+    );
+  }
+
+  Widget _buildGoogleSignInButton(double width) {
+    return Center(
+      child: BlocBuilder<GoogleSigninBloc, GoogleSigninState>(
         builder: (context, state) {
-          return SingleChildScrollView(
-            child: Form(
-              key: formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 15,
-                children: [
-                  HeadingWidget(
-                    title: AppString.signUp,
-                    subtitle: AppString.signupHeading,
-                  ),
-                  SizedBox(height: 5),
-                  AuthTextFieldWidget(
-                    width: textFieldWidth,
-                    textHeading: AppString.userName,
-                    focusNode: userNameFocusNode,
-                    nextFocusNode: emailFocusNode,
-                    labelText: AppString.enterUserName,
-                    controller: userNameController,
-                    validator: userNameValidator,
-                  ),
-                  AuthTextFieldWidget(
-                    width: textFieldWidth,
-                    textHeading: AppString.emailAddress,
-                    focusNode: emailFocusNode,
-                    nextFocusNode: passwordFocusNode,
-                    labelText: AppString.enterEmailAddress,
-                    controller: emailController,
-                    validator: emailValidator,
-                  ),
-                  BlocBuilder<PasswordVisiblityCubit, bool>(
-                    builder: (context, passwordHidden) {
-                      return AuthTextFieldWidget(
-                        width: textFieldWidth,
-                        textHeading: AppString.password,
-                        labelText: AppString.enterPassword,
-                        focusNode: passwordFocusNode,
-                        nextFocusNode: confirmPasswordFocusNode,
-                        controller: passwordController,
-                        validator: passwordValidator,
-                        isPassword: passwordHidden ? true : false,
-                        icon: IconButton(
-                          onPressed: () {
-                            context
-                                .read<PasswordVisiblityCubit>()
-                                .toggleVisibility();
-                          },
-                          icon: Icon(
-                            passwordHidden
-                                ? Icons.visibility_off
-                                : Icons.visibility,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  BlocBuilder<PasswordVisiblityCubit, bool>(
-                    builder: (context, passwordHidden) {
-                      return AuthTextFieldWidget(
-                        width: textFieldWidth,
-                        textHeading: AppString.confirmPassword,
-                        labelText: AppString.enterConfirmPassword,
-                        focusNode: confirmPasswordFocusNode,
-                        controller: confirmPasswordController,
-                        isPassword: passwordHidden ? true : false,
-                        validator: (value) => confirmPasswordValidator(
-                            value, passwordController.text),
-                        icon: IconButton(
-                          onPressed: () {
-                            context
-                                .read<PasswordVisiblityCubit>()
-                                .toggleVisibility();
-                          },
-                          icon: Icon(
-                            passwordHidden
-                                ? Icons.visibility_off
-                                : Icons.visibility,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  Center(
-                    child: ButtonWidget(
-                      isLoading: state is SignUpLoading,
-                      onTap: () {
-                        if (formKey.currentState!.validate()) {
-                          BlocProvider.of<SignUpBloc>(context).add(
-                            SignUpSubmitted(
-                              userName: userNameController.text.trim(),
-                              email: emailController.text.trim(),
-                              password: passwordController.text,
-                            ),
-                          );
-                        }
-                      },
-                      buttonWidth: textFieldWidth,
-                      buttonText: AppString.signUp,
-                      buttonRadius: 6,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: OrDividerWidget(),
-                  ),
-                  Center(
-                    child: GoogleButtonWidget(
-                      width: textFieldWidth,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    spacing: 6,
-                    children: [
-                      CustomText(
-                        text: AppString.alreadyHaveAccount,
-                        fontWeight: FontWeight.w500,
-                        color: CustomColors.blackColor,
-                        fontSize: 16,
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(context, Routes.login);
-                        },
-                        child: CustomText(
-                          text: AppString.login,
-                          fontWeight: FontWeight.w500,
-                          color: CustomColors.primaryColor,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                ],
-              ),
-            ),
+          return GoogleButtonWidget(
+            // isLoading: state is GoogleSigninLoading,
+            onTap: () =>
+                context.read<GoogleSigninBloc>().add(GoogleSigninSubmitted()),
+            width: width,
           );
         },
       ),
+    );
+  }
+
+  Widget _buildLoginRedirect() {
+    return Row(
+      spacing: 6,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        CustomText(
+            text: AppString.alreadyHaveAccount,
+            fontWeight: FontWeight.w500,
+            color: CustomColors.blackColor,
+            fontSize: 16),
+        GestureDetector(
+          onTap: () => Navigator.pushNamed(context, Routes.login),
+          child: CustomText(
+              text: AppString.login,
+              fontWeight: FontWeight.w500,
+              color: CustomColors.primaryColor,
+              fontSize: 16),
+        ),
+      ],
     );
   }
 }

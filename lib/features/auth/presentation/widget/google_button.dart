@@ -11,6 +11,8 @@ class GoogleButtonWidget extends StatelessWidget {
   final Color iconColor;
   final double width;
   final double height;
+  final bool loading;
+  final VoidCallback onTap;
 
   const GoogleButtonWidget(
       {super.key,
@@ -20,7 +22,9 @@ class GoogleButtonWidget extends StatelessWidget {
       this.borderRadius = 6,
       this.iconColor = CustomColors.whiteColor,
       this.width = 300,
-      this.height = 50});
+      this.height = 50,
+      this.loading = false,
+      required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +32,7 @@ class GoogleButtonWidget extends StatelessWidget {
       width: width,
       height: height,
       child: GoogleAuthButton(
-        onPressed: () {},
+        onPressed: onTap,
         style: AuthButtonStyle(
             borderRadius: borderRadius,
             iconBackground: iconColor,

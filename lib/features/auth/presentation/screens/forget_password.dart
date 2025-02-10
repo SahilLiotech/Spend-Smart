@@ -21,13 +21,33 @@ class ForgetPasswordScreen extends StatefulWidget {
 }
 
 class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
-  TextEditingController resetPasswordController = TextEditingController();
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
+    _emailController.dispose();
     super.dispose();
-    resetPasswordController.dispose();
+  }
+
+  void _onResetPassword(BuildContext context) {
+    if (_formKey.currentState!.validate()) {
+      context.read<ForgetPasswordBloc>().add(
+            ForgetPasswordSubmitted(email: _emailController.text),
+          );
+    }
+  }
+
+  void _showSuccessDialog(BuildContext context) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => ResetPassWordConfirmationDialog(
+        onResendEmail: () => _onResetPassword(context),
+        onBackToLogin: () =>
+            Navigator.pushReplacementNamed(context, Routes.login),
+      ),
+    );
   }
 
   @override
@@ -51,84 +71,80 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
       body: BlocConsumer<ForgetPasswordBloc, ForgetPasswordState>(
         listener: (context, state) {
           if (state is ForgetPasswordSuccess) {
-            showDialog(
-              barrierDismissible: false,
-              context: context,
-              builder: (context) => ResetPassWordConfirmationDialog(
-                onResendEmail: () {
-                  if (formKey.currentState!.validate()) {
-                    context.read<ForgetPasswordBloc>().add(
-                        ForgetPasswordSubmitted(
-                            email: resetPasswordController.text));
-                  }
-                },
-                onBackToLogin: () =>
-                    Navigator.pushReplacementNamed(context, Routes.login),
-              ),
-            );
-          }
-          if(state is ForgetPasswordFailure){
-            CustomToast.showFailure(context, AppString.failure ,state.message);
+            _showSuccessDialog(context);
+          } else if (state is ForgetPasswordFailure) {
+            CustomToast.showFailure(context, AppString.failure, state.message);
           }
         },
         builder: (context, state) {
           return SingleChildScrollView(
             child: Form(
-              key: formKey,
+              key: _formKey,
               child: Column(
-                spacing: 20,
+                spacing: 15,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const LottieHeadingWidget(
-                    lottieAsset: "assets/lottie/forget_password_lottie.json",
-                  ),
+                      lottieAsset: "assets/lottie/forget_password_lottie.json"),
                   const SizedBox(height: 10),
-                  CustomText(
-                    text: AppString.forgetPasswordHeading,
-                    color: CustomColors.blackColor,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18,
-                    textAlign: TextAlign.center,
-                  ),
+                  _buildHeadingText(),
+                  const SizedBox(height: 5),
+                  _buildEmailTextField(),
+                  const SizedBox(height: 5),
+                  _buildResetPasswordButton(state),
+                  _buildOrDivider(),
+                  _buildBackToLoginButton(),
                   const SizedBox(height: 10),
-                  AuthTextFieldWidget(
-                    textHeading: AppString.emailAddress,
-                    validator: emailValidator,
-                    controller: resetPasswordController,
-                    labelText: AppString.enterEmailAddress,
-                    width: MediaQuery.sizeOf(context).width * 0.9,
-                  ),
-                  ButtonWidget(
-                    isLoading: state is ForgetPasswordLoading,
-                    onTap: () {
-                      if (formKey.currentState!.validate()) {
-                        context.read<ForgetPasswordBloc>().add(
-                              ForgetPasswordSubmitted(
-                                email: resetPasswordController.text,
-                              ),
-                            );
-                      }
-                    },
-                    buttonText: AppString.resetPassword,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: OrDividerWidget(),
-                  ),
-                  ButtonWidget(
-                    onTap: () =>
-                        Navigator.pushReplacementNamed(context, Routes.login),
-                    buttonText: AppString.backToLogin,
-                    fontColor: CustomColors.blackColor,
-                    backgroundColor: CustomColors.whiteColor,
-                  ),
-                  const SizedBox(height: 40),
                 ],
               ),
             ),
           );
         },
       ),
+    );
+  }
+
+  Widget _buildHeadingText() {
+    return CustomText(
+      text: AppString.forgetPasswordHeading,
+      color: CustomColors.blackColor,
+      fontWeight: FontWeight.w700,
+      fontSize: 18,
+      textAlign: TextAlign.center,
+    );
+  }
+
+  Widget _buildEmailTextField() {
+    return AuthTextFieldWidget(
+      textHeading: AppString.emailAddress,
+      validator: emailValidator,
+      controller: _emailController,
+      labelText: AppString.enterEmailAddress,
+      width: MediaQuery.sizeOf(context).width * 0.9,
+    );
+  }
+
+  Widget _buildResetPasswordButton(ForgetPasswordState state) {
+    return ButtonWidget(
+      isLoading: state is ForgetPasswordLoading,
+      onTap: () => _onResetPassword(context),
+      buttonText: AppString.resetPassword,
+    );
+  }
+
+  Widget _buildOrDivider() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: OrDividerWidget(),
+    );
+  }
+
+  Widget _buildBackToLoginButton() {
+    return ButtonWidget(
+      onTap: () => Navigator.pushReplacementNamed(context, Routes.login),
+      buttonText: AppString.backToLogin,
+      fontColor: CustomColors.blackColor,
+      backgroundColor: CustomColors.whiteColor,
     );
   }
 }

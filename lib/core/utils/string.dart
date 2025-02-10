@@ -72,6 +72,7 @@ class AppString {
       "Network error. Please check your internet connection.";
   static const String requestTimeout =
       "Request timed out. Please check your internet connection.";
+  static const String googleSignInCancle = "Google Sign In Cancelled";
 
   // Form validation error messages
   static const String confirmPasswordMismatch =

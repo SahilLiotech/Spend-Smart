@@ -6,6 +6,7 @@ import 'package:spend_smart/config/routes/routes.dart';
 import 'package:spend_smart/core/di/service_locator.dart';
 import 'package:spend_smart/core/prefrences/apppref.dart';
 import 'package:spend_smart/features/auth/presentation/bloc/forget_password_bloc/forget_password_bloc.dart';
+import 'package:spend_smart/features/auth/presentation/bloc/google_signin_bloc/google_signin_bloc.dart';
 import 'package:spend_smart/features/auth/presentation/bloc/login_bloc/login_bloc.dart';
 import 'package:spend_smart/features/auth/presentation/bloc/password_visiblity_cubit.dart';
 import 'package:spend_smart/features/auth/presentation/bloc/signup_bloc/signup_bloc.dart';
@@ -49,6 +50,9 @@ class MyApp extends StatelessWidget {
         BlocProvider<ForgetPasswordBloc>(
           create: (context) => sl<ForgetPasswordBloc>(),
         ),
+        BlocProvider<GoogleSigninBloc>(
+          create: (context) => sl<GoogleSigninBloc>(),
+        ),
       ],
       child: MaterialApp(
         title: 'Spend Smart',
@@ -57,7 +61,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        initialRoute: Routes.signup,
+        initialRoute: Routes.onboarding,
         onGenerateRoute: AppRouter.generateRoute,
         home: const OnboardingScreen(),
       ),

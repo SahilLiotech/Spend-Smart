@@ -28,3 +28,12 @@ class LoginFailure extends LoginState {
   @override
   List<Object> get props => [message];
 }
+
+class LoginWithGoogleSuccess extends LoginState {
+  final UserEntity user;
+
+  const LoginWithGoogleSuccess({required this.user});
+
+  @override
+  List<Object> get props => [user];
+}

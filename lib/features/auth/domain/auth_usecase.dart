@@ -41,6 +41,17 @@ class SignUpParams {
       {required this.userName, required this.email, required this.password});
 }
 
+class SignInWithGoogleUseCase extends NoParams {
+  final AuthRepository repository;
+
+  SignInWithGoogleUseCase({required this.repository});
+
+  @override
+  Future<UserEntity> call() {
+    return repository.signInWithGoogle();
+  }
+}
+
 class SignOutUseCase extends NoParams {
   final AuthRepository repository;
 
