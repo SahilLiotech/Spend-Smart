@@ -10,9 +10,12 @@ part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final SignInUseCase signInUseCase;
+  final SignOutUseCase signOutUseCase;
 
-  LoginBloc({required this.signInUseCase}) : super(LoginInitial()) {
+  LoginBloc({required this.signInUseCase, required this.signOutUseCase})
+      : super(LoginInitial()) {
     on<LoginSubmitted>(_onLoginSubmitted);
+    on<LogoutEvent>(_onLogoutSubmitted);
   }
 
   Future<void> _onLoginSubmitted(
@@ -32,6 +35,21 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(LoginFailure(message: AppString.requestTimeout));
     } catch (e) {
       emit(LoginFailure(message: AppString.unexpectedError));
+    }
+  }
+
+  Future<void> _onLogoutSubmitted(
+      LogoutEvent event, Emitter<LoginState> emit) async {
+    emit(LogoutLoading());
+    try {
+      await signOutUseCase();
+      emit(LogoutSuccess());
+    } on AuthExecption catch (e) {
+      emit(LoginFailure(message: e.message));
+    } on TimeoutException {
+      emit(LogoutFailure(message: AppString.requestTimeout));
+    } catch (e) {
+      emit(LogoutFailure(message: AppString.unexpectedError));
     }
   }
 }

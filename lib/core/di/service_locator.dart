@@ -8,7 +8,7 @@ import 'package:spend_smart/features/auth/presentation/bloc/google_signin_bloc/g
 import 'package:spend_smart/features/auth/presentation/bloc/login_bloc/login_bloc.dart';
 import 'package:spend_smart/features/auth/presentation/bloc/signup_bloc/signup_bloc.dart';
 
-final sl = GetIt.instance; // Service Locator instance
+final sl = GetIt.instance;
 
 void serviceLocator() {
   // Services
@@ -46,7 +46,7 @@ void serviceLocator() {
     () => SignUpBloc(signUpUseCase: sl()),
   );
   sl.registerFactory<LoginBloc>(
-    () => LoginBloc(signInUseCase: sl()),
+    () => LoginBloc(signInUseCase: sl(), signOutUseCase: sl()),
   );
   sl.registerFactory<ForgetPasswordBloc>(
     () => ForgetPasswordBloc(sendPasswordResetEmailUseCase: sl()),

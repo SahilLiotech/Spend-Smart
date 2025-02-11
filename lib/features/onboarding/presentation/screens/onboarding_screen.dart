@@ -48,6 +48,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           return Scaffold(
             body: PageView.builder(
               controller: _pageController,
+              physics: const NeverScrollableScrollPhysics(),
               itemCount: 3,
               itemBuilder: (context, index) {
                 switch (index) {

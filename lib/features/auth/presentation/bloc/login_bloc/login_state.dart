@@ -37,3 +37,16 @@ class LoginWithGoogleSuccess extends LoginState {
   @override
   List<Object> get props => [user];
 }
+
+class LogoutLoading extends LoginState {}
+
+class LogoutSuccess extends LoginState {}
+
+class LogoutFailure extends LoginState {
+  final String message;
+
+  const LogoutFailure({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
