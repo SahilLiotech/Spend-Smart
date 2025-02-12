@@ -119,6 +119,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
       textHeading: AppString.emailAddress,
       validator: emailValidator,
       controller: _emailController,
+      prefixIcon: const Icon(Icons.email),
       labelText: AppString.enterEmailAddress,
       width: MediaQuery.sizeOf(context).width * 0.9,
     );

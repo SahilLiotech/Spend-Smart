@@ -1,10 +1,22 @@
 import 'package:bloc/bloc.dart';
 
+class PasswordVisibilityCubit extends Cubit<Map<String, bool>> {
+  PasswordVisibilityCubit()
+      : super({
+          'password': true,
+          'confirmPassword': true,
+          'loginPassword': true,
+        });
 
-class PasswordVisiblityCubit extends Cubit<bool> {
-  PasswordVisiblityCubit() : super(true);
+  void togglePasswordVisibility() {
+    emit({...state, 'password': !state['password']!});
+  }
 
-  void toggleVisibility() {
-    emit(!state);
+  void toggleConfirmPasswordVisibility() {
+    emit({...state, 'confirmPassword': !state['confirmPassword']!});
+  }
+
+  void toggleLoginPasswordVisibility() {
+    emit({...state, 'loginPassword': !state['loginPassword']!});
   }
 }

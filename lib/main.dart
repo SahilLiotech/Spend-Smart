@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:spend_smart/config/routes/app_router.dart';
 import 'package:spend_smart/config/routes/routes.dart';
 import 'package:spend_smart/core/di/service_locator.dart';
@@ -15,7 +16,8 @@ import 'package:spend_smart/features/onboarding/presentation/screens/onboarding_
 import 'package:spend_smart/firebase_options.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await AppPref.init();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -26,10 +28,22 @@ void main() async {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({
     super.key,
   });
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    debugPrint("MAIN INIT STATE");
+    super.initState();
+    FlutterNativeSplash.remove();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +52,8 @@ class MyApp extends StatelessWidget {
         BlocProvider<OnboardingCubit>(
           create: (context) => OnboardingCubit(),
         ),
-        BlocProvider<PasswordVisiblityCubit>(
-          create: (context) => PasswordVisiblityCubit(),
+        BlocProvider<PasswordVisibilityCubit>(
+          create: (context) => PasswordVisibilityCubit(),
         ),
         BlocProvider<SignUpBloc>(
           create: (context) => sl<SignUpBloc>(),

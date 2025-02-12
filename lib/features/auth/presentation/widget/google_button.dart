@@ -7,7 +7,7 @@ class GoogleButtonWidget extends StatelessWidget {
   final double fontSize;
   final FontWeight fontWeight;
   final Color fontColor;
-  final double borderRadius;
+  final double buttonRadius;
   final Color iconColor;
   final double width;
   final double height;
@@ -19,7 +19,7 @@ class GoogleButtonWidget extends StatelessWidget {
       this.fontSize = 18,
       this.fontWeight = FontWeight.w500,
       this.fontColor = CustomColors.blackColor,
-      this.borderRadius = 6,
+      this.buttonRadius = 6,
       this.iconColor = CustomColors.whiteColor,
       this.width = 300,
       this.height = 50,
@@ -34,7 +34,7 @@ class GoogleButtonWidget extends StatelessWidget {
       child: GoogleAuthButton(
         onPressed: onTap,
         style: AuthButtonStyle(
-            borderRadius: borderRadius,
+            borderRadius: buttonRadius,
             iconBackground: iconColor,
             buttonColor: CustomColors.whiteColor,
             buttonType: AuthButtonType.secondary,

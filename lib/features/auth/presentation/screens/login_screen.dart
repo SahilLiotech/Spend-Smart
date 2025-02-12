@@ -103,6 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildEmailTextField(double width) {
     return AuthTextFieldWidget(
       width: width,
+      prefixIcon: Icon(Icons.email),
       focusNode: _emailFocusNode,
       nextFocusNode: _passwordFocusNode,
       validator: emailValidator,
@@ -113,21 +114,24 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildPasswordTextField(double width) {
-    return BlocBuilder<PasswordVisiblityCubit, bool>(
+    return BlocBuilder<PasswordVisibilityCubit, Map<String, bool>>(
       builder: (context, passwordHidden) {
         return AuthTextFieldWidget(
           width: width,
+          prefixIcon: Icon(Icons.lock),
           textHeading: AppString.password,
           focusNode: _passwordFocusNode,
           validator: passwordValidator,
           labelText: AppString.enterPassword,
           controller: _passwordController,
-          isPassword: passwordHidden,
+          isPassword: passwordHidden['loginPassword']!,
           icon: IconButton(
-            onPressed: () =>
-                context.read<PasswordVisiblityCubit>().toggleVisibility(),
-            icon:
-                Icon(passwordHidden ? Icons.visibility_off : Icons.visibility),
+            onPressed: () => context
+                .read<PasswordVisibilityCubit>()
+                .toggleLoginPasswordVisibility(),
+            icon: Icon(passwordHidden['loginPassword']!
+                ? Icons.visibility_off
+                : Icons.visibility),
           ),
         );
       },
@@ -168,7 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
             },
             buttonWidth: width,
             buttonText: AppString.login,
-            buttonRadius: 6,
+            buttonRadius: 16,
           );
         },
       ),
@@ -180,6 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
       child: BlocBuilder<GoogleSigninBloc, GoogleSigninState>(
         builder: (context, state) {
           return GoogleButtonWidget(
+            buttonRadius: 16,
             onTap: () =>
                 context.read<GoogleSigninBloc>().add(GoogleSigninSubmitted()),
             width: width,
@@ -201,7 +206,7 @@ class _LoginScreenState extends State<LoginScreen> {
           fontSize: 16,
         ),
         GestureDetector(
-          onTap: () => Navigator.pushNamed(context, Routes.signup),
+          onTap: () => Navigator.pushReplacementNamed(context, Routes.signup),
           child: CustomText(
             text: AppString.signUp,
             fontWeight: FontWeight.w500,

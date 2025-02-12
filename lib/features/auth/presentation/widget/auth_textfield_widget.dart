@@ -12,16 +12,17 @@ class AuthTextFieldWidget extends StatelessWidget {
   final FocusNode? focusNode;
   final FocusNode? nextFocusNode;
   final FormFieldValidator<String>? validator;
-
+  final Icon? prefixIcon;
   final double width;
-
   final TextEditingController controller;
+
   const AuthTextFieldWidget({
     super.key,
     required this.textHeading,
     required this.controller,
     this.labelText = "",
-    this.borderRadius = 4.0,
+    this.borderRadius = 16.0,
+    this.prefixIcon,
     this.icon,
     this.isPassword = false,
     this.focusNode,
@@ -53,7 +54,8 @@ class AuthTextFieldWidget extends StatelessWidget {
               validator: validator,
               nextFocusNode: nextFocusNode,
               borderRadius: borderRadius,
-              icon: icon ,
+              icon: icon,
+              prefixIcon: prefixIcon,
             )
           ],
         ),

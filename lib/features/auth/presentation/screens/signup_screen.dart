@@ -97,6 +97,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     _emailFocusNode,
                     AppString.userName,
                     AppString.enterUserName,
+                    Icon(Icons.person),
                     userNameValidator,
                     width),
                 _buildTextField(
@@ -105,6 +106,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     _passwordFocusNode,
                     AppString.emailAddress,
                     AppString.enterEmailAddress,
+                    Icon(Icons.email),
                     emailValidator,
                     width),
                 _buildPasswordTextField(width),
@@ -131,6 +133,7 @@ class _SignupScreenState extends State<SignupScreen> {
       FocusNode? nextFocusNode,
       String heading,
       String label,
+      Icon prefixIcon,
       String? Function(String?) validator,
       double width) {
     return AuthTextFieldWidget(
@@ -139,27 +142,31 @@ class _SignupScreenState extends State<SignupScreen> {
       focusNode: focusNode,
       nextFocusNode: nextFocusNode,
       labelText: label,
+      prefixIcon: prefixIcon,
       controller: controller,
       validator: validator,
     );
   }
 
   Widget _buildPasswordTextField(double width) {
-    return BlocBuilder<PasswordVisiblityCubit, bool>(
+    return BlocBuilder<PasswordVisibilityCubit, Map<String, bool>>(
       builder: (context, passwordHidden) {
         return AuthTextFieldWidget(
           width: width,
+          prefixIcon: Icon(Icons.lock),
           textHeading: AppString.password,
           focusNode: _passwordFocusNode,
           validator: passwordValidator,
           labelText: AppString.enterPassword,
           controller: _passwordController,
-          isPassword: passwordHidden,
+          isPassword: passwordHidden['password']!,
           icon: IconButton(
-            onPressed: () =>
-                context.read<PasswordVisiblityCubit>().toggleVisibility(),
-            icon:
-                Icon(passwordHidden ? Icons.visibility_off : Icons.visibility),
+            onPressed: () => context
+                .read<PasswordVisibilityCubit>()
+                .togglePasswordVisibility(),
+            icon: Icon(passwordHidden['password']!
+                ? Icons.visibility_off
+                : Icons.visibility),
           ),
         );
       },
@@ -167,22 +174,25 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   Widget _buildConfirmPasswordTextField(double width) {
-    return BlocBuilder<PasswordVisiblityCubit, bool>(
+    return BlocBuilder<PasswordVisibilityCubit, Map<String, bool>>(
       builder: (context, passwordHidden) {
         return AuthTextFieldWidget(
           width: width,
+          prefixIcon: Icon(Icons.lock),
           textHeading: AppString.confirmPassword,
           focusNode: _confirmPasswordFocusNode,
           validator: (value) =>
               confirmPasswordValidator(value, _passwordController.text),
           labelText: AppString.enterPassword,
           controller: _confirmPasswordController,
-          isPassword: passwordHidden,
+          isPassword: passwordHidden['confirmPassword']!,
           icon: IconButton(
-            onPressed: () =>
-                context.read<PasswordVisiblityCubit>().toggleVisibility(),
-            icon:
-                Icon(passwordHidden ? Icons.visibility_off : Icons.visibility),
+            onPressed: () => context
+                .read<PasswordVisibilityCubit>()
+                .toggleConfirmPasswordVisibility(),
+            icon: Icon(passwordHidden['confirmPassword']!
+                ? Icons.visibility_off
+                : Icons.visibility),
           ),
         );
       },
@@ -206,7 +216,7 @@ class _SignupScreenState extends State<SignupScreen> {
         },
         buttonWidth: width,
         buttonText: AppString.signUp,
-        buttonRadius: 6,
+        buttonRadius: 16,
       ),
     );
   }
@@ -220,6 +230,7 @@ class _SignupScreenState extends State<SignupScreen> {
             onTap: () =>
                 context.read<GoogleSigninBloc>().add(GoogleSigninSubmitted()),
             width: width,
+            buttonRadius: 16,
           );
         },
       ),
@@ -237,7 +248,7 @@ class _SignupScreenState extends State<SignupScreen> {
             color: CustomColors.blackColor,
             fontSize: 16),
         GestureDetector(
-          onTap: () => Navigator.pushNamed(context, Routes.login),
+          onTap: () => Navigator.pushReplacementNamed(context, Routes.login),
           child: CustomText(
               text: AppString.login,
               fontWeight: FontWeight.w500,

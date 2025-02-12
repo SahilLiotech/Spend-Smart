@@ -37,7 +37,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return BlocListener<OnboardingCubit, OnboardingCubitState>(
       listener: (context, state) {
         if (state is OnboardingNavigation) {
-          Navigator.pushReplacementNamed(context, Routes.login);
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            Routes.login,
+            (route) => false,
+          );
         }
       },
       child: BlocBuilder<OnboardingCubit, OnboardingCubitState>(

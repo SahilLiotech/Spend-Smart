@@ -13,6 +13,7 @@ class CustomTextField extends StatelessWidget {
   final bool isPassword;
   final FocusNode? focusNode;
   final FocusNode? nextFocusNode;
+  final Icon? prefixIcon;
   final IconButton? icon;
   final FormFieldValidator<String>? validator;
 
@@ -27,6 +28,7 @@ class CustomTextField extends StatelessWidget {
     this.isPassword = false,
     this.focusNode,
     this.nextFocusNode,
+    this.prefixIcon,
     this.icon,
     this.validator,
   });
@@ -45,6 +47,7 @@ class CustomTextField extends StatelessWidget {
       validator: validator,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       decoration: InputDecoration(
+        prefixIcon: prefixIcon,
         suffixIcon: icon,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(borderRadius),
