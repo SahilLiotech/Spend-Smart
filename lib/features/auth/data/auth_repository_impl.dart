@@ -187,5 +187,6 @@ class AuthRepositoryImpl extends AuthRepository {
   @override
   Future<void> signOut() async {
     await firebaseService.auth.signOut();
+    await GoogleSignIn().signOut();
   }
 }

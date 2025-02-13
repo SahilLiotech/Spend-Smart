@@ -1,0 +1,2 @@
+D:/Spend Smart/spend_smart/android/app/.cxx/Debug/2e1hk354/x86_64/CMakeFiles/edit_cache.dir
+D:/Spend Smart/spend_smart/android/app/.cxx/Debug/2e1hk354/x86_64/CMakeFiles/rebuild_cache.dir
