@@ -6,13 +6,13 @@ import 'package:spend_smart/config/routes/app_router.dart';
 import 'package:spend_smart/config/routes/routes.dart';
 import 'package:spend_smart/core/di/service_locator.dart';
 import 'package:spend_smart/core/prefrences/apppref.dart';
+import 'package:spend_smart/features/auth/domain/auth_repository.dart';
 import 'package:spend_smart/features/auth/presentation/bloc/forget_password_bloc/forget_password_bloc.dart';
 import 'package:spend_smart/features/auth/presentation/bloc/google_signin_bloc/google_signin_bloc.dart';
 import 'package:spend_smart/features/auth/presentation/bloc/login_bloc/login_bloc.dart';
 import 'package:spend_smart/features/auth/presentation/bloc/password_visiblity_cubit.dart';
 import 'package:spend_smart/features/auth/presentation/bloc/signup_bloc/signup_bloc.dart';
 import 'package:spend_smart/features/onboarding/presentation/cubit/onboarding_cubit.dart';
-import 'package:spend_smart/features/onboarding/presentation/screens/onboarding_screen.dart';
 import 'package:spend_smart/firebase_options.dart';
 
 void main() async {
@@ -22,31 +22,59 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
   serviceLocator();
-
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({
-    super.key,
-  });
+  const MyApp({super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
+  String? _initialRoute;
+
   @override
   void initState() {
-    debugPrint("MAIN INIT STATE");
     super.initState();
+    _initializeApp();
+  }
+
+  Future<void> _initializeApp() async {
+    await _determineInitialRoute();
     FlutterNativeSplash.remove();
+  }
+
+  Future<void> _determineInitialRoute() async {
+    final bool isOnboardingDone = AppPref.isOnboardingDone();
+    final auth = sl<AuthRepository>();
+    final bool isSignedIn = await auth.isSignedIn();
+
+    setState(() {
+      if (!isOnboardingDone) {
+        _initialRoute = Routes.onboarding;
+      } else if (isSignedIn) {
+        _initialRoute = Routes.dashboard;
+      } else {
+        _initialRoute = Routes.login;
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_initialRoute == null) {
+      return const MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+      );
+    }
+
     return MultiBlocProvider(
       providers: [
         BlocProvider<OnboardingCubit>(
@@ -75,9 +103,8 @@ class _MyAppState extends State<MyApp> {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        initialRoute: Routes.onboarding,
+        initialRoute: _initialRoute,
         onGenerateRoute: AppRouter.generateRoute,
-        home: const OnboardingScreen(),
       ),
     );
   }
