@@ -1,4 +1,3 @@
-import 'package:device_preview_plus/device_preview_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,6 +12,7 @@ import 'package:spend_smart/features/auth/presentation/bloc/google_signin_bloc/g
 import 'package:spend_smart/features/auth/presentation/bloc/login_bloc/login_bloc.dart';
 import 'package:spend_smart/features/auth/presentation/bloc/password_visiblity_cubit.dart';
 import 'package:spend_smart/features/auth/presentation/bloc/signup_bloc/signup_bloc.dart';
+import 'package:spend_smart/features/main/presentation/bloc/navigation_cubit.dart';
 import 'package:spend_smart/features/onboarding/presentation/cubit/onboarding_cubit.dart';
 import 'package:spend_smart/firebase_options.dart';
 
@@ -57,7 +57,7 @@ class _MyAppState extends State<MyApp> {
       if (!isOnboardingDone) {
         _initialRoute = Routes.onboarding;
       } else if (isSignedIn) {
-        _initialRoute = Routes.dashboard;
+        _initialRoute = Routes.mainLayout;
       } else {
         _initialRoute = Routes.login;
       }
@@ -95,6 +95,9 @@ class _MyAppState extends State<MyApp> {
         ),
         BlocProvider<GoogleSigninBloc>(
           create: (context) => sl<GoogleSigninBloc>(),
+        ),
+        BlocProvider(
+          create: (context) => sl<NavigationCubit>(),
         ),
       ],
       child: MaterialApp(

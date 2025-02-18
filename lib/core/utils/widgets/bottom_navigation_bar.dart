@@ -23,6 +23,8 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
   Widget build(BuildContext context) {
     return BottomAppBar(
       shape: const CircularNotchedRectangle(),
+      color: CustomColors.whiteColor,
+      elevation: 12.0,
       notchMargin: 8.0,
       child: SizedBox(
         height: 70,
@@ -51,13 +53,18 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
         children: [
           SvgPicture.asset(
             icon,
+            height: 24,
+            width: 24,
             colorFilter: widget.selectedIndex == index
                 ? ColorFilter.mode(CustomColors.primaryColor, BlendMode.srcIn)
                 : ColorFilter.mode(CustomColors.hintTextColor, BlendMode.srcIn),
           ),
           CustomText(
             text: label,
-            fontSize: 12,
+            fontSize: widget.selectedIndex == index ? 14 : 12,
+            fontWeight: widget.selectedIndex == index
+                ? FontWeight.w600
+                : FontWeight.w500,
             color: widget.selectedIndex == index
                 ? CustomColors.primaryColor
                 : CustomColors.hintTextColor,

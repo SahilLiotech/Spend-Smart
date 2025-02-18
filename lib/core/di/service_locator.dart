@@ -7,6 +7,7 @@ import 'package:spend_smart/features/auth/presentation/bloc/forget_password_bloc
 import 'package:spend_smart/features/auth/presentation/bloc/google_signin_bloc/google_signin_bloc.dart';
 import 'package:spend_smart/features/auth/presentation/bloc/login_bloc/login_bloc.dart';
 import 'package:spend_smart/features/auth/presentation/bloc/signup_bloc/signup_bloc.dart';
+import 'package:spend_smart/features/main/presentation/bloc/navigation_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -54,4 +55,5 @@ void serviceLocator() {
   sl.registerFactory<GoogleSigninBloc>(
     () => GoogleSigninBloc(signInWithGoogleUseCase: sl()),
   );
+  sl.registerFactory<NavigationCubit>(() => NavigationCubit());
 }

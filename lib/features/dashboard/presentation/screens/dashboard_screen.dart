@@ -17,14 +17,6 @@ class DashBoardScreen extends StatefulWidget {
 }
 
 class _DashBoardScreenState extends State<DashBoardScreen> {
-  int _currentIndex = 0;
-
-  void _onNavItemSelected(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,20 +44,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             );
           },
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        shape: const CircleBorder(),
-        onPressed: () {
-          _onNavItemSelected(2);
-        },
-        child: SvgPicture.asset(
-          "assets/images/add_icon.svg",
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: CustomBottomNavigationBar(
-        selectedIndex: _currentIndex,
-        onItemSelected: _onNavItemSelected,
       ),
     );
   }

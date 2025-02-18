@@ -3,6 +3,7 @@ class Routes {
   static const String login = '/login';
   static const String signup = '/signup';
   static const String forgetPassword = '/forgetPassword';
+  static const String mainLayout = '/mainLayout';
   static const String dashboard = '/dashboard';
   static const String onboarding = '/onboarding';
   static const String transaction = '/transaction';

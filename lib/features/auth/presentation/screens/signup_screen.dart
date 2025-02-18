@@ -65,7 +65,7 @@ class _SignupScreenState extends State<SignupScreen> {
               } else if (state is SignUpSuccess) {
                 CustomToast.showSuccess(
                     context, AppString.success, AppString.signUpSuccess);
-                Navigator.pushNamed(context, Routes.dashboard);
+                Navigator.pushNamed(context, Routes.mainLayout);
               }
             },
           ),
@@ -74,7 +74,7 @@ class _SignupScreenState extends State<SignupScreen> {
               if (state is GoogleSigninSuccess) {
                 CustomToast.showSuccess(
                     context, AppString.success, AppString.loginSuccess);
-                Navigator.pushNamed(context, Routes.dashboard);
+                Navigator.pushNamed(context, Routes.mainLayout);
               } else if (state is GoogleSigninFailure) {
                 CustomToast.showFailure(
                     context, AppString.failure, state.message);
