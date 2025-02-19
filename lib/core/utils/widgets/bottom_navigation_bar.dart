@@ -27,7 +27,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
       elevation: 12.0,
       notchMargin: 8.0,
       child: SizedBox(
-        height: 70,
+        // height: 70,
         child: Row(
           spacing: 6,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -35,7 +35,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
             _buildNavItem("assets/images/home_icon.svg", "Home", 0),
             _buildNavItem(
                 "assets/images/transaction_icon.svg", "Transaction", 1),
-            const SizedBox(width: 50), // Space for FAB
+            const SizedBox(width: 50),
             _buildNavItem("assets/images/category_icon.svg", "Category", 3),
             _buildNavItem("assets/images/budget_icon.svg", "Budget", 4),
           ],
@@ -45,8 +45,14 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
   }
 
   Widget _buildNavItem(String icon, String label, int index) {
-    return GestureDetector(
-      onTap: () => widget.onItemSelected(index),
+    return InkWell(
+      onTap: () {
+        if (widget.selectedIndex != index) {
+          widget.onItemSelected(index);
+        }
+      },
+      highlightColor: Colors.transparent,
+      splashColor: Colors.transparent,
       child: Column(
         spacing: 4,
         mainAxisSize: MainAxisSize.min,
