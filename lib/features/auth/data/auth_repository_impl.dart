@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:spend_smart/core/error/exception.dart';
+import 'package:spend_smart/core/prefrences/apppref.dart';
 import 'package:spend_smart/core/services/firebase_service.dart';
 import 'package:spend_smart/core/utils/string.dart';
 import 'package:spend_smart/features/auth/data/auth_error_mapper.dart';
@@ -30,6 +31,9 @@ class AuthRepositoryImpl extends AuthRepository {
         name: userName,
         image: '',
       );
+
+      AppPref.setUserName(userName);
+      AppPref.setUserEmail(email);
 
       await firebaseService.firestore
           .collection('users')
@@ -68,6 +72,9 @@ class AuthRepositoryImpl extends AuthRepository {
           .collection('users')
           .doc(userCredential.user!.uid)
           .get();
+
+      AppPref.setUserName(userDoc.data()!['userName']);
+      AppPref.setUserEmail(email);
       return UserModel.fromMap(userDoc.data()!);
     } on FirebaseAuthException catch (e) {
       throw AuthExecption(AuthErrorMapper.map(e.code));
@@ -126,8 +133,14 @@ class AuthRepositoryImpl extends AuthRepository {
             .doc(user.uid)
             .set(newUser.toMap());
 
+        AppPref.setUserName(user.displayName!);
+        AppPref.setUserEmail(user.email!);
+
         return newUser;
       }
+
+      AppPref.setUserName(user.displayName!);
+      AppPref.setUserEmail(user.email!);
 
       return UserModel.fromMap(userDoc.data()!);
     } on FirebaseAuthException catch (e) {
@@ -188,5 +201,6 @@ class AuthRepositoryImpl extends AuthRepository {
   Future<void> signOut() async {
     await firebaseService.auth.signOut();
     await GoogleSignIn().signOut();
+    await AppPref.clear();
   }
 }

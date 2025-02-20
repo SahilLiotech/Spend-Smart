@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:spend_smart/core/utils/custom_colors.dart';
 import 'package:spend_smart/core/utils/widgets/bottom_navigation_bar.dart';
+import 'package:spend_smart/core/utils/widgets/transaction_bottom_sheet.dart';
 import 'package:spend_smart/features/budget/presentation/screens/budget_screen.dart';
 import 'package:spend_smart/features/category/presentation/screens/category_screen.dart';
 import 'package:spend_smart/features/dashboard/presentation/screens/dashboard_screen.dart';
@@ -22,7 +23,23 @@ class MainLayout extends StatelessWidget {
           floatingActionButton: FloatingActionButton(
             shape: const CircleBorder(),
             onPressed: () {
-              context.read<NavigationCubit>().updateIndex(2);
+              showModalBottomSheet(
+                context: context,
+                isDismissible: false,
+                enableDrag: false,
+                isScrollControlled: true,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                ),
+                builder: (context) {
+                  return Padding(
+                    padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewInsets.bottom,
+                    ),
+                    child: CustomTransactionBottomSheet(),
+                  );
+                },
+              );
             },
             child: SvgPicture.asset("assets/images/add_icon.svg"),
           ),
@@ -44,8 +61,6 @@ class MainLayout extends StatelessWidget {
       case 0:
         return const DashBoardScreen();
       case 1:
-        return const TransactionScreen();
-      case 2:
         return const TransactionScreen();
       case 3:
         return const CategoryScreen();

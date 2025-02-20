@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:spend_smart/core/services/firebase_service.dart';
+import 'package:spend_smart/core/utils/widgets/transaction_type_cubit.dart';
 import 'package:spend_smart/features/auth/data/auth_repository_impl.dart';
 import 'package:spend_smart/features/auth/domain/auth_repository.dart';
 import 'package:spend_smart/features/auth/domain/auth_usecase.dart';
@@ -56,4 +57,6 @@ void serviceLocator() {
     () => GoogleSigninBloc(signInWithGoogleUseCase: sl()),
   );
   sl.registerFactory<NavigationCubit>(() => NavigationCubit());
+
+  sl.registerFactory<TransactionTypeCubit>(() => TransactionTypeCubit());
 }

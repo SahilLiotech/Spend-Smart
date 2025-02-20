@@ -14,4 +14,24 @@ class AppPref {
   static Future<void> setOnboardingDone(bool value) async {
     await _preferences.setBool('isOnboardingDone', value);
   }
+
+  static String getUserName() {
+    return _preferences.getString('userName') ?? '';
+  }
+
+  static Future<void> setUserName(String value) async {
+    await _preferences.setString('userName', value);
+  }
+
+  static String getUserEmail() {
+    return _preferences.getString('userEmail') ?? '';
+  }
+
+  static Future<void> setUserEmail(String value) async {
+    await _preferences.setString('userEmail', value);
+  }
+
+  static Future<void> clear() async {
+    await _preferences.clear();
+  }
 }

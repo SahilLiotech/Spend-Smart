@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:spend_smart/core/utils/custom_colors.dart';
+import 'package:spend_smart/core/utils/string.dart';
 import 'package:spend_smart/core/utils/widgets/custom_text_widget.dart';
 
 class CustomBottomNavigationBar extends StatefulWidget {
@@ -32,12 +33,13 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
           spacing: 6,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _buildNavItem("assets/images/home_icon.svg", "Home", 0),
-            _buildNavItem(
-                "assets/images/transaction_icon.svg", "Transaction", 1),
+            _buildNavItem("assets/images/home_icon.svg", AppString.home, 0),
+            _buildNavItem("assets/images/transaction_icon.svg",
+                AppString.transacations, 1),
             const SizedBox(width: 50),
-            _buildNavItem("assets/images/category_icon.svg", "Category", 3),
-            _buildNavItem("assets/images/budget_icon.svg", "Budget", 4),
+            _buildNavItem(
+                "assets/images/category_icon.svg", AppString.categories, 3),
+            _buildNavItem("assets/images/budget_icon.svg", AppString.budget, 4),
           ],
         ),
       ),

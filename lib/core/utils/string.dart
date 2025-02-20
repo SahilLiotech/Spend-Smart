@@ -83,4 +83,31 @@ class AppString {
   static const String passwordTooShort = "Must be at least 6 characters";
   static const String passwordRequirements =
       "Must include uppercase, lowercase, number & symbol";
+
+  //dashboard
+
+  static const String dashboard = "Dashboard";
+  static const String totalBalance = "Total Balance";
+  static const String expense = "Expense";
+  static const String income = "Income";
+  static const String hello = "Hello";
+
+  static const String home = "Home";
+  static const String profile = "Profile";
+  static const String settings = "Settings";
+  static const String logout = "Logout";
+  static const String transacations = "Transacations";
+  static const String categories = "Categories";
+  static const String addTransaction = "Add Transaction";
+  static const String addCategory = "Add Category";
+  static const String budget = "Budget";
+  static const String recentTransaction = "Recent Transactions";
+
+  static const String addIncomeExpense = "Add Income & Expense";
+  static const String enterIncome = "Enter Income Amount";
+  static const String enterExpense = "Enter Expense Amount";
+  static const String receivedFrom = "Received From?";
+  static const String paidTo = "Paid To?";
+  static const String addTag = "Add Tag";
+  static const String create = "Create";
 }

@@ -7,6 +7,7 @@ import 'package:spend_smart/config/routes/app_router.dart';
 import 'package:spend_smart/config/routes/routes.dart';
 import 'package:spend_smart/core/di/service_locator.dart';
 import 'package:spend_smart/core/prefrences/apppref.dart';
+import 'package:spend_smart/core/utils/widgets/transaction_type_cubit.dart';
 import 'package:spend_smart/features/auth/domain/auth_repository.dart';
 import 'package:spend_smart/features/auth/presentation/bloc/forget_password_bloc/forget_password_bloc.dart';
 import 'package:spend_smart/features/auth/presentation/bloc/google_signin_bloc/google_signin_bloc.dart';
@@ -101,6 +102,7 @@ class _MyAppState extends State<MyApp> {
           BlocProvider(
             create: (context) => sl<NavigationCubit>(),
           ),
+          BlocProvider(create: (context) => sl<TransactionTypeCubit>())
         ],
         child: MaterialApp(
           title: 'Spend Smart',
