@@ -31,7 +31,8 @@ class AppPref {
     await _preferences.setString('userEmail', value);
   }
 
-  static Future<void> clear() async {
-    await _preferences.clear();
+  static Future<void> clearUserData() async {
+    await _preferences.remove('userName');
+    await _preferences.remove('userEmail');
   }
 }

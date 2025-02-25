@@ -1,0 +1,214 @@
+{
+  "categories": [
+    {
+      "id": 1,
+      "type": "expense",
+      "name": "Foods & Drinks",
+      "icon": "assets/images/foods_drinks.svg"
+    },
+    {
+      "id": 2,
+      "type": "expense",
+      "name": "Transport",
+      "icon": "assets/images/transport.svg"
+    },
+    {
+      "id": 3,
+      "type": "expense",
+      "name": "Shopping",
+      "icon": "assets/images/shopping.svg"
+    },
+    {
+      "id": 4,
+      "type": "expense",
+      "name": "Groceries",
+      "icon": "assets/images/groceries.svg"
+    },
+    {
+      "id": 5,
+      "type": "expense",
+      "name": "Entertainment",
+      "icon": "assets/images/entertainment.svg"
+    },
+    {
+      "id": 6,
+      "type": "expense",
+      "name": "Events",
+      "icon": "assets/images/events.svg"
+    },
+    {
+      "id": 7,
+      "type": "expense",
+      "name": "Travel",
+      "icon": "assets/images/travel.svg"
+    },
+    {
+      "id": 8,
+      "type": "expense",
+      "name": "Medical",
+      "icon": "assets/images/medical.svg"
+    },
+    {
+      "id": 9,
+      "type": "expense",
+      "name": "Personal",
+      "icon": "assets/images/personal.svg"
+    },
+    {
+      "id": 10,
+      "type": "expense",
+      "name": "Fitness",
+      "icon": "assets/images/fitness.svg"
+    },
+    {
+      "id": 11,
+      "type": "expense",
+      "name": "Services",
+      "icon": "assets/images/services.svg"
+    },
+    {
+      "id": 12,
+      "type": "expense",
+      "name": "Bill",
+      "icon": "assets/images/bill.svg"
+    },
+    {
+      "id": 13,
+      "type": "expense",
+      "name": "Subscription",
+      "icon": "assets/images/subscription.svg"
+    },
+    {
+      "id": 14,
+      "type": "expense",
+      "name": "EMI",
+      "icon": "assets/images/emi.svg"
+    },
+    {
+      "id": 15,
+      "type": "expense",
+      "name": "Investment",
+      "icon": "assets/images/investment.svg"
+    },
+    {
+      "id": 16,
+      "type": "expense",
+      "name": "Support",
+      "icon": "assets/images/support.svg"
+    },
+    {
+      "id": 17,
+      "type": "expense",
+      "name": "Insurance",
+      "icon": "assets/images/insurance.svg"
+    },
+    {
+      "id": 18,
+      "type": "expense",
+      "name": "Tax",
+      "icon": "assets/images/tax.svg"
+    },
+    {
+      "id": 19,
+      "type": "expense",
+      "name": "Topup",
+      "icon": "assets/images/topup.svg"
+    },
+    {
+      "id": 20,
+      "type": "expense",
+      "name": "Donation",
+      "icon": "assets/images/donation.svg"
+    },
+    {
+      "id": 21,
+      "type": "expense",
+      "name": "Savings",
+      "icon": "assets/images/savings.svg"
+    },
+    {
+      "id": 22,
+      "type": "expense",
+      "name": "Gift",
+      "icon": "assets/images/gift.svg"
+    },
+    {
+      "id": 23,
+      "type": "expense",
+      "name": "Lent",
+      "icon": "assets/images/lent.svg"
+    },
+    {
+      "id": 24,
+      "type": "expense",
+      "name": "Other",
+      "icon": "assets/images/other.svg"
+    },
+    {
+      "id": 25,
+      "type": "income",
+      "name": "Earning",
+      "icon": "assets/images/earning.svg"
+    },
+    {
+      "id": 26,
+      "type": "income",
+      "name": "Salary",
+      "icon": "assets/images/salary.svg"
+    },
+    {
+      "id": 27,
+      "type": "income",
+      "name": "Pocket Money",
+      "icon": "assets/images/pocket_money.svg"
+    },
+    {
+      "id": 28,
+      "type": "income",
+      "name": "Gift",
+      "icon": "assets/images/income_gift.svg"
+    },
+    {
+      "id": 29,
+      "type": "income",
+      "name": "Borrowed",
+      "icon": "assets/images/borrowed.svg"
+    },
+    {
+      "id": 30,
+      "type": "income",
+      "name": "Bonus",
+      "icon": "assets/images/bonus.svg"
+    },
+    {
+      "id": 31,
+      "type": "income",
+      "name": "Interest",
+      "icon": "assets/images/interest.svg"
+    },
+    {
+      "id": 32,
+      "type": "income",
+      "name": "Freelance",
+      "icon": "assets/images/freelance.svg"
+    },
+    {
+      "id": 33,
+      "type": "income",
+      "name": "Business",
+      "icon": "assets/images/business.svg"
+    },
+    {
+      "id": 34,
+      "type": "income",
+      "name": "Rental Income",
+      "icon": "assets/images/rental_income.svg"
+    },
+    {
+      "id": 35,
+      "type": "income",
+      "name": "Other",
+      "icon": "assets/images/income_other.svg"
+    }
+  ]
+}

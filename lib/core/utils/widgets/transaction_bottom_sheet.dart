@@ -2,11 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
+import 'dart:convert';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:spend_smart/core/utils/custom_colors.dart';
 import 'package:spend_smart/core/utils/string.dart';
 import 'package:spend_smart/core/utils/widgets/button_widget.dart';
 import 'package:spend_smart/core/utils/widgets/custom_text_widget.dart';
 import 'package:spend_smart/core/utils/widgets/transaction_type_cubit.dart';
+
+class Category {
+  final int id;
+  final String type;
+  final String name;
+  final String icon;
+
+  Category({
+    required this.id,
+    required this.type,
+    required this.name,
+    required this.icon,
+  });
+
+  factory Category.fromJson(Map<String, dynamic> json) {
+    return Category(
+      id: json['id'],
+      type: json['type'],
+      name: json['name'],
+      icon: json['icon'],
+    );
+  }
+}
 
 class CustomTransactionBottomSheet extends StatefulWidget {
   const CustomTransactionBottomSheet({super.key});
@@ -25,6 +50,40 @@ class _CustomTransactionBottomSheetState
   final TextEditingController _paidToController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
+  final TextEditingController _tagController = TextEditingController();
+
+  final FocusNode _incomeAmountFocusNode = FocusNode();
+  final FocusNode _expenseAmountFocusNode = FocusNode();
+  final FocusNode _receivedFromFocusNode = FocusNode();
+  final FocusNode _paidToFocusNode = FocusNode();
+  final FocusNode _dateFocusNode = FocusNode();
+  final FocusNode _timeFocusNode = FocusNode();
+  final FocusNode _tagFocusNode = FocusNode();
+
+  List<Category> categories = [];
+  Category? selectedCategory;
+
+  @override
+  void initState() {
+    super.initState();
+    loadCategories();
+  }
+
+  Future<void> loadCategories() async {
+    try {
+      final String jsonString =
+          await rootBundle.loadString('assets/data/categories.json');
+      final Map<String, dynamic> jsonData = jsonDecode(jsonString);
+      final List<dynamic> categoriesJson = jsonData['categories'];
+
+      setState(() {
+        categories =
+            categoriesJson.map((json) => Category.fromJson(json)).toList();
+      });
+    } catch (e) {
+      debugPrint('Error loading categories: $e');
+    }
+  }
 
   @override
   void dispose() {
@@ -34,10 +93,18 @@ class _CustomTransactionBottomSheetState
     _paidToController.dispose();
     _dateController.dispose();
     _timeController.dispose();
+    _tagController.dispose();
+    _incomeAmountFocusNode.dispose();
+    _expenseAmountFocusNode.dispose();
+    _receivedFromFocusNode.dispose();
+    _paidToFocusNode.dispose();
+    _dateFocusNode.dispose();
+    _timeFocusNode.dispose();
+    _tagFocusNode.dispose();
     super.dispose();
   }
 
-  Future<void> _selectDate() async {
+  Future<void> selectDate() async {
     DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -51,7 +118,7 @@ class _CustomTransactionBottomSheetState
     }
   }
 
-  Future<void> _selectTime() async {
+  Future<void> selectTime() async {
     TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
@@ -61,6 +128,81 @@ class _CustomTransactionBottomSheetState
         _timeController.text = picked.format(context);
       });
     }
+  }
+
+  void showCategoryBottomSheet(
+      BuildContext context, TransactionType transactionType) {
+    final String type =
+        transactionType == TransactionType.income ? 'income' : 'expense';
+    final List<Category> filteredCategories =
+        categories.where((c) => c.type == type).toList();
+
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.all(16),
+          height: MediaQuery.of(context).size.height * 0.6,
+          child: Column(
+            spacing: 10,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomText(
+                text: "Select $type Category",
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: CustomColors.blackColor,
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: filteredCategories.length,
+                  itemBuilder: (context, index) {
+                    final category = filteredCategories[index];
+                    return ListTile(
+                      title: Row(
+                        children: [
+                          SvgPicture.asset(
+                            category.icon,
+                            width: 24,
+                            height: 24,
+                          ),
+                          const SizedBox(width: 12),
+                          CustomText(
+                            text: category.name,
+                            color: CustomColors.blackColor,
+                          ),
+                        ],
+                      ),
+                      trailing: Radio<int>(
+                        value: category.id,
+                        groupValue: selectedCategory?.id,
+                        onChanged: (int? value) {
+                          setState(() {
+                            selectedCategory = category;
+                            _tagController.text = category.name;
+                          });
+                          Navigator.pop(context);
+                        },
+                      ),
+                      onTap: () {
+                        setState(() {
+                          selectedCategory = category;
+                          _tagController.text = category.name;
+                        });
+                        Navigator.pop(context);
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -76,10 +218,9 @@ class _CustomTransactionBottomSheetState
             borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
           ),
           child: Column(
-            spacing: 10,
             mainAxisSize: MainAxisSize.min,
+            spacing: 15,
             children: [
-              // Header
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -97,9 +238,6 @@ class _CustomTransactionBottomSheetState
                   )
                 ],
               ),
-
-              const SizedBox(height: 5),
-
               Row(
                 spacing: 10,
                 children: [
@@ -153,13 +291,12 @@ class _CustomTransactionBottomSheetState
                   ),
                 ],
               ),
-
-              const SizedBox(height: 2),
-
               TextField(
                 controller: isIncome
                     ? _incomeAmountController
                     : _expenseAmountController,
+                focusNode:
+                    isIncome ? _incomeAmountFocusNode : _expenseAmountFocusNode,
                 decoration: InputDecoration(
                   hintText:
                       isIncome ? AppString.enterIncome : AppString.enterExpense,
@@ -171,10 +308,10 @@ class _CustomTransactionBottomSheetState
                 ),
                 keyboardType: TextInputType.number,
               ),
-
               TextField(
                 controller:
                     isIncome ? _receivedFromController : _paidToController,
+                focusNode: isIncome ? _receivedFromFocusNode : _paidToFocusNode,
                 decoration: InputDecoration(
                   hintText:
                       isIncome ? AppString.receivedFrom : AppString.paidTo,
@@ -185,38 +322,54 @@ class _CustomTransactionBottomSheetState
                       borderSide: BorderSide.none),
                 ),
               ),
-
-              Row(
-                spacing: 10,
-                children: [
-                  Expanded(
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: AppString.addTag,
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide.none),
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.search),
-                    onPressed: () {},
-                  ),
-                ],
-              ),
-
               Row(
                 spacing: 10,
                 children: [
                   Expanded(
                     child: GestureDetector(
-                      onTap: _selectDate,
+                      onTap: () => showCategoryBottomSheet(context, state),
+                      child: AbsorbPointer(
+                        child: TextField(
+                          controller: _tagController,
+                          focusNode: _tagFocusNode,
+                          decoration: InputDecoration(
+                            hintText: AppString.addTag,
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: BorderSide.none),
+                            prefixIcon: selectedCategory != null
+                                ? Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: SvgPicture.asset(
+                                      selectedCategory!.icon,
+                                      width: 20,
+                                      height: 20,
+                                    ),
+                                  )
+                                : null,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.search),
+                    onPressed: () => showCategoryBottomSheet(context, state),
+                  ),
+                ],
+              ),
+              Row(
+                spacing: 10,
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: selectDate,
                       child: AbsorbPointer(
                         child: TextField(
                           controller: _dateController,
+                          focusNode: _dateFocusNode,
                           decoration: InputDecoration(
                             hintText: "Select Date",
                             filled: true,
@@ -232,10 +385,11 @@ class _CustomTransactionBottomSheetState
                   ),
                   Expanded(
                     child: GestureDetector(
-                      onTap: _selectTime,
+                      onTap: selectTime,
                       child: AbsorbPointer(
                         child: TextField(
                           controller: _timeController,
+                          focusNode: _timeFocusNode,
                           decoration: InputDecoration(
                             hintText: "Select Time",
                             filled: true,
@@ -251,18 +405,19 @@ class _CustomTransactionBottomSheetState
                   ),
                 ],
               ),
-
-              const SizedBox(height: 5),
-
-              SizedBox(
-                width: double.infinity,
-                child: ButtonWidget(
-                  onTap: () {
-                    // Handle create button action
-                  },
-                  buttonText: AppString.create,
-                  buttonRadius: 16,
-                  buttonTextSize: 16,
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ButtonWidget(
+                    onTap: () {
+                      debugPrint(
+                          "SELECTED CATEGORY :::: ${_tagController.text}");
+                    },
+                    buttonText: AppString.create,
+                    buttonRadius: 16,
+                    buttonTextSize: 16,
+                  ),
                 ),
               ),
             ],

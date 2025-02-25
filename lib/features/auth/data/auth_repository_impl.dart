@@ -201,6 +201,6 @@ class AuthRepositoryImpl extends AuthRepository {
   Future<void> signOut() async {
     await firebaseService.auth.signOut();
     await GoogleSignIn().signOut();
-    await AppPref.clear();
+    await AppPref.clearUserData();
   }
 }
