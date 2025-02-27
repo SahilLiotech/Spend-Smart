@@ -13,6 +13,7 @@ import 'package:spend_smart/features/auth/presentation/bloc/google_signin_bloc/g
 import 'package:spend_smart/features/auth/presentation/bloc/login_bloc/login_bloc.dart';
 import 'package:spend_smart/features/auth/presentation/bloc/password_visiblity_cubit.dart';
 import 'package:spend_smart/features/auth/presentation/bloc/signup_bloc/signup_bloc.dart';
+import 'package:spend_smart/features/category/presentation/cubit/category_cubit.dart';
 import 'package:spend_smart/features/main/presentation/bloc/navigation_cubit.dart';
 import 'package:spend_smart/features/onboarding/presentation/cubit/onboarding_cubit.dart';
 import 'package:spend_smart/firebase_options.dart';
@@ -100,7 +101,8 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(
           create: (context) => sl<NavigationCubit>(),
         ),
-        BlocProvider(create: (context) => sl<TransactionTypeCubit>())
+        BlocProvider(create: (context) => sl<TransactionTypeCubit>()),
+        BlocProvider(create: (context) => sl<CategoryCubit>())
       ],
       child: MaterialApp(
         title: 'Spend Smart',

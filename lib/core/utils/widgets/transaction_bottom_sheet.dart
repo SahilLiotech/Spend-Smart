@@ -2,36 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
-import 'dart:convert';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:spend_smart/core/utils/custom_colors.dart';
 import 'package:spend_smart/core/utils/string.dart';
 import 'package:spend_smart/core/utils/widgets/button_widget.dart';
+import 'package:spend_smart/core/utils/widgets/category_bottom_sheet.dart';
 import 'package:spend_smart/core/utils/widgets/custom_text_widget.dart';
 import 'package:spend_smart/core/utils/widgets/transaction_type_cubit.dart';
-
-class Category {
-  final int id;
-  final String type;
-  final String name;
-  final String icon;
-
-  Category({
-    required this.id,
-    required this.type,
-    required this.name,
-    required this.icon,
-  });
-
-  factory Category.fromJson(Map<String, dynamic> json) {
-    return Category(
-      id: json['id'],
-      type: json['type'],
-      name: json['name'],
-      icon: json['icon'],
-    );
-  }
-}
+import 'package:spend_smart/features/category/domain/category_entity.dart';
 
 class CustomTransactionBottomSheet extends StatefulWidget {
   const CustomTransactionBottomSheet({super.key});
@@ -60,29 +37,11 @@ class _CustomTransactionBottomSheetState
   final FocusNode _timeFocusNode = FocusNode();
   final FocusNode _tagFocusNode = FocusNode();
 
-  List<Category> categories = [];
-  Category? selectedCategory;
+  CategoryEntity? selectedCategory;
 
   @override
   void initState() {
     super.initState();
-    loadCategories();
-  }
-
-  Future<void> loadCategories() async {
-    try {
-      final String jsonString =
-          await rootBundle.loadString('assets/data/categories.json');
-      final Map<String, dynamic> jsonData = jsonDecode(jsonString);
-      final List<dynamic> categoriesJson = jsonData['categories'];
-
-      setState(() {
-        categories =
-            categoriesJson.map((json) => Category.fromJson(json)).toList();
-      });
-    } catch (e) {
-      debugPrint('Error loading categories: $e');
-    }
   }
 
   @override
@@ -132,74 +91,21 @@ class _CustomTransactionBottomSheetState
 
   void showCategoryBottomSheet(
       BuildContext context, TransactionType transactionType) {
-    final String type =
-        transactionType == TransactionType.income ? 'income' : 'expense';
-    final List<Category> filteredCategories =
-        categories.where((c) => c.type == type).toList();
-
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (BuildContext context) {
-        return Container(
-          padding: const EdgeInsets.all(16),
-          height: MediaQuery.of(context).size.height * 0.6,
-          child: Column(
-            spacing: 10,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CustomText(
-                text: "Select $type Category",
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: CustomColors.blackColor,
-              ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: filteredCategories.length,
-                  itemBuilder: (context, index) {
-                    final category = filteredCategories[index];
-                    return ListTile(
-                      title: Row(
-                        children: [
-                          SvgPicture.asset(
-                            category.icon,
-                            width: 24,
-                            height: 24,
-                          ),
-                          const SizedBox(width: 12),
-                          CustomText(
-                            text: category.name,
-                            color: CustomColors.blackColor,
-                          ),
-                        ],
-                      ),
-                      trailing: Radio<int>(
-                        value: category.id,
-                        groupValue: selectedCategory?.id,
-                        onChanged: (int? value) {
-                          setState(() {
-                            selectedCategory = category;
-                            _tagController.text = category.name;
-                          });
-                          Navigator.pop(context);
-                        },
-                      ),
-                      onTap: () {
-                        setState(() {
-                          selectedCategory = category;
-                          _tagController.text = category.name;
-                        });
-                        Navigator.pop(context);
-                      },
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
+        return CategoryBottomSheet(
+          transactionType: transactionType,
+          selectedCategory: selectedCategory,
+          onCategorySelected: (category) {
+            setState(() {
+              selectedCategory = category;
+              _tagController.text = category.name;
+            });
+          },
         );
       },
     );

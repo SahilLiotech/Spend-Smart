@@ -9,3 +9,9 @@ class TimeoutException implements Exception {
 
   TimeoutException(this.message);
 }
+
+class ErrorException implements Exception {
+  final String message;
+
+  ErrorException(this.message);
+}
