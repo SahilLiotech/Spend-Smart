@@ -6,7 +6,7 @@ import 'package:spend_smart/config/routes/app_router.dart';
 import 'package:spend_smart/config/routes/routes.dart';
 import 'package:spend_smart/core/di/service_locator.dart';
 import 'package:spend_smart/core/prefrences/apppref.dart';
-import 'package:spend_smart/core/utils/widgets/transaction_type_cubit.dart';
+import 'package:spend_smart/features/transactions/presentation/bloc/transaction_type_cubit.dart';
 import 'package:spend_smart/features/auth/domain/auth_repository.dart';
 import 'package:spend_smart/features/auth/presentation/bloc/forget_password_bloc/forget_password_bloc.dart';
 import 'package:spend_smart/features/auth/presentation/bloc/google_signin_bloc/google_signin_bloc.dart';
@@ -16,6 +16,7 @@ import 'package:spend_smart/features/auth/presentation/bloc/signup_bloc/signup_b
 import 'package:spend_smart/features/category/presentation/cubit/category_cubit.dart';
 import 'package:spend_smart/features/main/presentation/bloc/navigation_cubit.dart';
 import 'package:spend_smart/features/onboarding/presentation/cubit/onboarding_cubit.dart';
+import 'package:spend_smart/features/transactions/presentation/cubit/transaction_cubit.dart';
 import 'package:spend_smart/firebase_options.dart';
 
 void main() async {
@@ -102,7 +103,8 @@ class _MyAppState extends State<MyApp> {
           create: (context) => sl<NavigationCubit>(),
         ),
         BlocProvider(create: (context) => sl<TransactionTypeCubit>()),
-        BlocProvider(create: (context) => sl<CategoryCubit>())
+        BlocProvider(create: (context) => sl<CategoryCubit>()),
+        BlocProvider(create: (context) => sl<TransactionCubit>())
       ],
       child: MaterialApp(
         title: 'Spend Smart',

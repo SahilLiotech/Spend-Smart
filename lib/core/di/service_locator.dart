@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:spend_smart/core/services/firebase_service.dart';
-import 'package:spend_smart/core/utils/widgets/transaction_type_cubit.dart';
+import 'package:spend_smart/features/category/domain/usecases/get_category_usecase.dart';
+import 'package:spend_smart/features/transactions/presentation/bloc/transaction_type_cubit.dart';
 import 'package:spend_smart/features/auth/data/auth_repository_impl.dart';
 import 'package:spend_smart/features/auth/domain/auth_repository.dart';
 import 'package:spend_smart/features/auth/domain/auth_usecase.dart';
@@ -9,9 +10,10 @@ import 'package:spend_smart/features/auth/presentation/bloc/google_signin_bloc/g
 import 'package:spend_smart/features/auth/presentation/bloc/login_bloc/login_bloc.dart';
 import 'package:spend_smart/features/auth/presentation/bloc/signup_bloc/signup_bloc.dart';
 import 'package:spend_smart/features/category/data/category_repository_imp.dart';
-import 'package:spend_smart/features/category/domain/category_repository.dart';
+import 'package:spend_smart/features/category/domain/repositories/category_repository.dart';
 import 'package:spend_smart/features/category/presentation/cubit/category_cubit.dart';
 import 'package:spend_smart/features/main/presentation/bloc/navigation_cubit.dart';
+import 'package:spend_smart/features/transactions/presentation/cubit/transaction_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -26,7 +28,7 @@ void serviceLocator() {
     () => AuthRepositoryImpl(firebaseService: sl()),
   );
   sl.registerLazySingleton<CategoryRepository>(
-    () => CategoryRepositoryImp(),
+    () => CategoryRepositoryImpl(),
   );
 
   // Use Cases
@@ -48,6 +50,9 @@ void serviceLocator() {
   sl.registerLazySingleton<SendPasswordResetEmailUseCase>(
     () => SendPasswordResetEmailUseCase(repository: sl()),
   );
+  sl.registerLazySingleton<GetCategoriesUseCase>(
+    () => GetCategoriesUseCase(repository: sl()),
+  );
 
   // BLoCs
   sl.registerFactory<SignUpBloc>(
@@ -67,5 +72,7 @@ void serviceLocator() {
   sl.registerFactory<TransactionTypeCubit>(() => TransactionTypeCubit());
 
   sl.registerFactory<CategoryCubit>(
-      () => CategoryCubit(categoryRepository: sl()));
+      () => CategoryCubit(getCategoriesUseCase: sl()));
+
+  sl.registerFactory<TransactionCubit>(() => TransactionCubit());
 }

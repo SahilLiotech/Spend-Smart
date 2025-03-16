@@ -1,13 +1,15 @@
-import 'package:bloc/bloc.dart';
-import 'package:spend_smart/features/category/domain/category_entity.dart';
-import 'package:spend_smart/features/category/domain/category_repository.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:spend_smart/features/category/domain/entities/category_entity.dart';
+import 'package:spend_smart/features/category/domain/usecases/get_category_usecase.dart';
 
 class CategoryCubit extends Cubit<List<CategoryEntity>> {
-  final CategoryRepository categoryRepository;
-  CategoryCubit({required this.categoryRepository}) : super([]);
-  Future<void> loadData() async {
+  final GetCategoriesUseCase getCategoriesUseCase;
+
+  CategoryCubit({required this.getCategoriesUseCase}) : super([]);
+
+  Future<void> loadCategories() async {
     try {
-      final categories = await categoryRepository.fetchCategory();
+      final categories = await getCategoriesUseCase();
       emit(categories);
     } catch (e) {
       emit([]);
