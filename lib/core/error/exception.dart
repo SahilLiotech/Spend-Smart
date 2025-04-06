@@ -4,10 +4,10 @@ class AuthExecption implements Exception {
   AuthExecption(this.message);
 }
 
-class TimeoutException implements Exception {
+class CustomTimeOutException implements Exception {
   final String message;
 
-  TimeoutException(this.message);
+  CustomTimeOutException(this.message);
 }
 
 class ErrorException implements Exception {

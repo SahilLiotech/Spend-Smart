@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -7,9 +8,14 @@ import 'package:spend_smart/core/utils/string.dart';
 import 'package:spend_smart/core/utils/widgets/button_widget.dart';
 import 'package:spend_smart/core/utils/widgets/category_bottom_sheet.dart';
 import 'package:spend_smart/core/utils/widgets/custom_text_widget.dart';
-import 'package:spend_smart/features/transactions/presentation/bloc/transaction_type_cubit.dart';
+import 'package:spend_smart/core/utils/widgets/custom_toast.dart';
+import 'package:spend_smart/features/transactions/data/models/transaction_model.dart';
+import 'package:spend_smart/features/transactions/presentation/cubit/transaction_type_cubit.dart';
 import 'package:spend_smart/features/category/domain/entities/category_entity.dart';
-import 'package:spend_smart/features/transactions/presentation/cubit/transaction_cubit.dart';
+import 'package:spend_smart/features/transactions/presentation/cubit/transaction_cubit.dart'
+    as transaction_cubit;
+
+import '../../../features/transactions/presentation/bloc/transaction_bloc/transaction_bloc.dart';
 
 class CustomTransactionBottomSheet extends StatefulWidget {
   const CustomTransactionBottomSheet({super.key});
@@ -45,14 +51,13 @@ class _CustomTransactionBottomSheetState
   @override
   void initState() {
     super.initState();
-    // _dateController.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
-    // _timeController.text = TimeOfDay.now().format(context);
-
-    _incomeAmountController.addListener(_validateForm);
-    _expenseAmountController.addListener(_validateForm);
-    _receivedFromController.addListener(_validateForm);
-    _paidToController.addListener(_validateForm);
-    _tagController.addListener(_validateForm);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _incomeAmountController.addListener(_validateForm);
+      _expenseAmountController.addListener(_validateForm);
+      _receivedFromController.addListener(_validateForm);
+      _paidToController.addListener(_validateForm);
+      _tagController.addListener(_validateForm);
+    });
   }
 
   void _validateForm() {
@@ -101,7 +106,7 @@ class _CustomTransactionBottomSheetState
 
     if (picked != null) {
       if (!ctx.mounted) return;
-      ctx.read<TransactionCubit>().selectDate(picked);
+      ctx.read<transaction_cubit.TransactionCubit>().selectDate(picked);
       setState(() {
         _dateController.text = DateFormat('dd/MM/yyyy').format(picked);
       });
@@ -111,13 +116,13 @@ class _CustomTransactionBottomSheetState
   Future<void> selectTime() async {
     final ctx = context;
     TimeOfDay? picked = await showTimePicker(
-      context: ctx, // Use the local variable
+      context: ctx,
       initialTime: TimeOfDay.now(),
     );
 
     if (picked != null) {
       if (!ctx.mounted) return;
-      ctx.read<TransactionCubit>().selectTime(picked);
+      ctx.read<transaction_cubit.TransactionCubit>().selectTime(picked);
       setState(() {
         _timeController.text = picked.format(ctx);
       });
@@ -171,14 +176,32 @@ class _CustomTransactionBottomSheetState
       timeOfDay.minute,
     );
 
-    debugPrint("Creating transaction:");
-    debugPrint("Type: ${isIncome ? 'Income' : 'Expense'}");
-    debugPrint(
-        "Amount: ${isIncome ? _incomeAmountController.text : _expenseAmountController.text}");
-    debugPrint(
-        "From/To: ${isIncome ? _receivedFromController.text : _paidToController.text}");
-    debugPrint("Category: ${selectedCategory?.name}");
-    debugPrint("DateTime: $completeDateTime");
+    final transaction = TransactionModel(
+      category: selectedCategory?.name ?? 'Uncategorized',
+      transactionType: isIncome ? 'income' : 'expense',
+      transactionAmount: isIncome
+          ? double.parse(_incomeAmountController.text)
+          : double.parse(_expenseAmountController.text),
+      paidTo: isIncome ? null : _paidToController.text,
+      receivedFrom: isIncome ? _receivedFromController.text : null,
+      transactionDate: completeDateTime,
+      transactionTime: _timeController.text,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+
+    final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+
+    context.read<TransactionBloc>().add(
+          AddTransactionEvent(
+            userId: userId,
+            transaction: transaction,
+          ),
+        );
+
+    debugPrint("Transaction added: $transaction");
+    CustomToast.showSuccess(
+        context, "Success", "Transaction added successfully");
 
     Navigator.pop(context);
   }
@@ -411,13 +434,24 @@ class _CustomTransactionBottomSheetState
                     ),
                   ),
                 ]),
-                BlocBuilder<TransactionCubit, TransactionState>(
+                BlocConsumer<TransactionBloc, TransactionState>(
+                  listener: (context, state) {
+                    if (state is TransactionError) {
+                      CustomToast.showFailure(
+                          context, "Failure", state.message);
+                    }
+                    if (state is TransactionSuccess) {
+                      CustomToast.showSuccess(
+                          context, "Success", state.message);
+                    }
+                  },
                   builder: (context, transactionState) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: SizedBox(
                         width: double.infinity,
                         child: ButtonWidget(
+                          isLoading: transactionState is TransactionLoading,
                           buttonText: AppString.create,
                           buttonRadius: 16,
                           buttonTextSize: 16,

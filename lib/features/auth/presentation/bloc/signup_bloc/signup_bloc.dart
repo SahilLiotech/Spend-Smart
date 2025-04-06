@@ -29,7 +29,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       emit(SignUpSuccess(user: user));
     } on AuthExecption catch (e) {
       emit(SignUpFailure(message: e.message));
-    } on TimeoutException {
+    } on CustomTimeOutException {
       emit(SignUpFailure(message: AppString.requestTimeout));
     } catch (e) {
       emit(SignUpFailure(message: AppString.unexpectedError));

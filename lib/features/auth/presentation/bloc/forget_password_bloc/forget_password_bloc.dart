@@ -26,7 +26,7 @@ class ForgetPasswordBloc
       emit(ForgetPasswordSuccess());
     } on AuthExecption catch (e) {
       emit(ForgetPasswordFailure(message: e.message));
-    } on TimeoutException {
+    } on CustomTimeOutException {
       emit(ForgetPasswordFailure(message: AppString.requestTimeout));
     } catch (e) {
       emit(ForgetPasswordFailure(message: AppString.unexpectedError));

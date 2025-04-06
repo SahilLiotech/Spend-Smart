@@ -23,7 +23,7 @@ class GoogleSigninBloc extends Bloc<GoogleSigninEvent, GoogleSigninState> {
       emit(GoogleSigninSuccess(user: user));
     } on AuthExecption catch (e) {
       emit(GoogleSigninFailure(message: e.message));
-    } on TimeoutException {
+    } on CustomTimeOutException {
       emit(GoogleSigninFailure(message: AppString.requestTimeout));
     } catch (e) {
       emit(GoogleSigninFailure(message: AppString.unexpectedError));

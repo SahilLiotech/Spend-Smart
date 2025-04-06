@@ -31,7 +31,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(LoginSuccess(user: user));
     } on AuthExecption catch (e) {
       emit(LoginFailure(message: e.message));
-    } on TimeoutException {
+    } on CustomTimeOutException {
       emit(LoginFailure(message: AppString.requestTimeout));
     } catch (e) {
       emit(LoginFailure(message: AppString.unexpectedError));
@@ -46,7 +46,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(LogoutSuccess());
     } on AuthExecption catch (e) {
       emit(LoginFailure(message: e.message));
-    } on TimeoutException {
+    } on CustomTimeOutException {
       emit(LogoutFailure(message: AppString.requestTimeout));
     } catch (e) {
       emit(LogoutFailure(message: AppString.unexpectedError));

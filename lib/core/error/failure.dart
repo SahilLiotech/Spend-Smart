@@ -4,5 +4,13 @@ abstract class Failure {
 }
 
 class AuthFailure extends Failure {
-  AuthFailure(super.message);
+  const AuthFailure(super.message);
+}
+
+class TimeoutFailure extends Failure {
+  const TimeoutFailure(super.message);
+}
+
+class GeneralFailure extends Failure {
+  const GeneralFailure(super.message);
 }

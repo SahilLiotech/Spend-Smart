@@ -21,7 +21,7 @@ class AuthRepositoryImpl extends AuthRepository {
           .timeout(
         const Duration(seconds: 10),
         onTimeout: () {
-          throw TimeoutException(AppString.requestTimeout);
+          throw CustomTimeOutException(AppString.requestTimeout);
         },
       );
 
@@ -43,7 +43,7 @@ class AuthRepositoryImpl extends AuthRepository {
       return user;
     } on FirebaseAuthException catch (e) {
       throw AuthExecption(AuthErrorMapper.map(e.code));
-    } on TimeoutException {
+    } on CustomTimeOutException {
       throw AuthExecption(AppString.requestTimeout);
     } on FirebaseException catch (e) {
       throw AuthExecption(AuthErrorMapper.map(e.code));
@@ -64,7 +64,7 @@ class AuthRepositoryImpl extends AuthRepository {
           .timeout(
         const Duration(seconds: 10),
         onTimeout: () {
-          throw TimeoutException(AppString.requestTimeout);
+          throw CustomTimeOutException(AppString.requestTimeout);
         },
       );
 
@@ -78,7 +78,7 @@ class AuthRepositoryImpl extends AuthRepository {
       return UserModel.fromMap(userDoc.data()!);
     } on FirebaseAuthException catch (e) {
       throw AuthExecption(AuthErrorMapper.map(e.code));
-    } on TimeoutException {
+    } on CustomTimeOutException {
       throw AuthExecption(AppString.requestTimeout);
     } on FirebaseException catch (e) {
       throw AuthExecption(AuthErrorMapper.map(e.code));
@@ -106,7 +106,7 @@ class AuthRepositoryImpl extends AuthRepository {
           await firebaseService.auth.signInWithCredential(credential).timeout(
         const Duration(seconds: 10),
         onTimeout: () {
-          throw TimeoutException(AppString.requestTimeout);
+          throw CustomTimeOutException(AppString.requestTimeout);
         },
       );
 
@@ -145,7 +145,7 @@ class AuthRepositoryImpl extends AuthRepository {
       return UserModel.fromMap(userDoc.data()!);
     } on FirebaseAuthException catch (e) {
       throw AuthExecption(AuthErrorMapper.map(e.code));
-    } on TimeoutException {
+    } on CustomTimeOutException {
       throw AuthExecption(AppString.requestTimeout);
     } on FirebaseException catch (e) {
       throw AuthExecption(AuthErrorMapper.map(e.code));
@@ -166,13 +166,13 @@ class AuthRepositoryImpl extends AuthRepository {
           .timeout(
         const Duration(seconds: 10),
         onTimeout: () {
-          throw TimeoutException(AppString.requestTimeout);
+          throw CustomTimeOutException(AppString.requestTimeout);
         },
       );
       return UserModel.fromMap(userDoc.data()!);
     } on FirebaseAuthException catch (e) {
       throw AuthExecption(AuthErrorMapper.map(e.code));
-    } on TimeoutException {
+    } on CustomTimeOutException {
       throw AuthExecption(AppString.requestTimeout);
     } on FirebaseException catch (e) {
       throw AuthExecption(AuthErrorMapper.map(e.code));

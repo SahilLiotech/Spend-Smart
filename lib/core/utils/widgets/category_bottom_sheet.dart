@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spend_smart/core/utils/custom_colors.dart';
 import 'package:spend_smart/core/utils/widgets/custom_text_widget.dart';
-import 'package:spend_smart/features/transactions/presentation/bloc/transaction_type_cubit.dart';
+import 'package:spend_smart/features/transactions/presentation/cubit/transaction_type_cubit.dart';
 import 'package:spend_smart/features/category/domain/entities/category_entity.dart';
 import 'package:spend_smart/features/category/presentation/cubit/category_cubit.dart';
 

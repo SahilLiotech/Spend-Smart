@@ -1,7 +1,9 @@
 import 'package:get_it/get_it.dart';
 import 'package:spend_smart/core/services/firebase_service.dart';
 import 'package:spend_smart/features/category/domain/usecases/get_category_usecase.dart';
-import 'package:spend_smart/features/transactions/presentation/bloc/transaction_type_cubit.dart';
+import 'package:spend_smart/features/transactions/data/repository/transaction_repository_imp.dart';
+import 'package:spend_smart/features/transactions/presentation/bloc/transaction_bloc/transaction_bloc.dart';
+import 'package:spend_smart/features/transactions/presentation/cubit/transaction_type_cubit.dart';
 import 'package:spend_smart/features/auth/data/auth_repository_impl.dart';
 import 'package:spend_smart/features/auth/domain/auth_repository.dart';
 import 'package:spend_smart/features/auth/domain/auth_usecase.dart';
@@ -15,6 +17,14 @@ import 'package:spend_smart/features/category/presentation/cubit/category_cubit.
 import 'package:spend_smart/features/main/presentation/bloc/navigation_cubit.dart';
 import 'package:spend_smart/features/transactions/presentation/cubit/transaction_cubit.dart';
 
+import '../../features/transactions/data/datasources/transaction_remote_datasource.dart';
+import '../../features/transactions/data/datasources/transaction_remote_datasource_impl.dart';
+import '../../features/transactions/domain/repositories/transaction_repository.dart';
+import '../../features/transactions/domain/usecases/add_transaction_usecase.dart';
+import '../../features/transactions/domain/usecases/delete_transaction_usecase.dart';
+import '../../features/transactions/domain/usecases/get_transactions_usecase.dart';
+import '../../features/transactions/domain/usecases/update_transaction_usecase.dart';
+
 final sl = GetIt.instance;
 
 void serviceLocator() {
@@ -23,12 +33,24 @@ void serviceLocator() {
     () => FirebaseService(),
   );
 
+  // Data Sources
+
+  sl.registerLazySingleton<TransactionRemoteDataSource>(
+    () => TransactionRemoteDataSourceImpl(firebaseService: sl()),
+  );
+
   // Repositories
   sl.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(firebaseService: sl()),
   );
   sl.registerLazySingleton<CategoryRepository>(
     () => CategoryRepositoryImpl(),
+  );
+
+  sl.registerLazySingleton<TransactionRepository>(
+    () => TransactionRepositoryImpl(
+      remoteDataSource: sl(),
+    ),
   );
 
   // Use Cases
@@ -53,6 +75,18 @@ void serviceLocator() {
   sl.registerLazySingleton<GetCategoriesUseCase>(
     () => GetCategoriesUseCase(repository: sl()),
   );
+  sl.registerLazySingleton<AddTransactionUseCase>(
+    () => AddTransactionUseCase(repository: sl()),
+  );
+  sl.registerLazySingleton<UpdateTransactionUsecase>(
+    () => UpdateTransactionUsecase(repository: sl()),
+  );
+  sl.registerLazySingleton<DeleteTransactionUseCase>(
+    () => DeleteTransactionUseCase(repository: sl()),
+  );
+  sl.registerLazySingleton<GetTransactionsUseCase>(
+    () => GetTransactionsUseCase(repository: sl()),
+  );
 
   // BLoCs
   sl.registerFactory<SignUpBloc>(
@@ -75,4 +109,11 @@ void serviceLocator() {
       () => CategoryCubit(getCategoriesUseCase: sl()));
 
   sl.registerFactory<TransactionCubit>(() => TransactionCubit());
+
+  sl.registerFactory<TransactionBloc>(() => TransactionBloc(
+        getTransactionsUseCase: sl(),
+        addTransactionUseCase: sl(),
+        updateTransactionUseCase: sl(),
+        deleteTransactionUseCase: sl(),
+      ));
 }
