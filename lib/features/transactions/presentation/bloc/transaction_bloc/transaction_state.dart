@@ -13,11 +13,20 @@ final class TransactionLoading extends TransactionState {}
 
 class TransactionsLoaded extends TransactionState {
   final List<TransactionEntity> transactions;
+  final double totalIncome;
+  final double totalExpense;
+  final double totalBalance;
 
-  const TransactionsLoaded(this.transactions);
+  const TransactionsLoaded(
+    this.transactions, {
+    this.totalIncome = 0.0,
+    this.totalExpense = 0.0,
+    this.totalBalance = 0.0,
+  });
 
   @override
-  List<Object> get props => [transactions];
+  List<Object> get props =>
+      [transactions, totalIncome, totalExpense, totalBalance];
 }
 
 class TransactionLoaded extends TransactionState {

@@ -36,7 +36,22 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     try {
       final transactions = await getTransactionsUseCase(
           GetTransactionsParams(userId: event.userId));
-      emit(TransactionsLoaded(transactions));
+      double totalIncome = 0.0;
+      double totalExpense = 0.0;
+
+      for (var transaction in transactions) {
+        if (transaction.transactionType == 'income') {
+          totalIncome += transaction.transactionAmount;
+        } else {
+          totalExpense += transaction.transactionAmount;
+        }
+      }
+
+      double totalBalance = totalIncome - totalExpense;
+      emit(TransactionsLoaded(transactions,
+          totalIncome: totalIncome,
+          totalExpense: totalExpense,
+          totalBalance: totalBalance));
     } catch (e) {
       emit(TransactionError('Failed to load transactions: $e'));
     }

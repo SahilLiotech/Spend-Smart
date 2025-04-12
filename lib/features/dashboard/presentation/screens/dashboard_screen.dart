@@ -9,6 +9,9 @@ import 'package:spend_smart/core/utils/string.dart';
 import 'package:spend_smart/core/utils/widgets/custom_text_widget.dart';
 import 'package:spend_smart/features/auth/presentation/bloc/login_bloc/login_bloc.dart';
 
+import '../../../transactions/presentation/bloc/transaction_bloc/transaction_bloc.dart';
+import '../widget/custom_transaction_card.dart';
+
 class DashBoardScreen extends StatefulWidget {
   const DashBoardScreen({super.key});
 
@@ -18,271 +21,105 @@ class DashBoardScreen extends StatefulWidget {
 
 class _DashBoardScreenState extends State<DashBoardScreen> {
   @override
+  void initState() {
+    super.initState();
+    _loadTransactions();
+  }
+
+  void _loadTransactions() {
+    final userId = AppPref.getUserId();
+    context.read<TransactionBloc>().add(GetTransactionsEvent(userId: userId));
+  }
+
+  @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
     final height = MediaQuery.sizeOf(context).height;
 
-    return Scaffold(
-      backgroundColor: CustomColors.secondaryColor,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Column(
-            spacing: 5,
-            children: [
-              const SizedBox(height: 10),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 20,
-                    children: [
-                      _buildHeader(),
-                      _buildDashboardContainer(width, height),
-                      CustomText(
-                        text: AppString.recentTransaction,
-                        color: CustomColors.blackColor,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 20,
-                      ),
-                      Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                        decoration: BoxDecoration(
-                          color: CustomColors.whiteColor,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border(
-                            left: BorderSide(
-                                color: CustomColors.incomeColor, width: 6),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: CustomColors.hintTextColor,
-                              blurRadius: 4,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
+    return BlocListener<TransactionBloc, TransactionState>(
+      listener: (context, state) {
+        if (state is TransactionSuccess) {
+          // Refresh the transactions when a transaction is added successfully
+          _loadTransactions();
+        }
+      },
+      child: Scaffold(
+        backgroundColor: CustomColors.secondaryColor,
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Column(
+              spacing: 5,
+              children: [
+                const SizedBox(height: 10),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 20,
+                      children: [
+                        _buildHeader(),
+                        _buildDashboardContainer(width, height),
+                        CustomText(
+                          text: AppString.recentTransaction,
+                          color: CustomColors.blackColor,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 20,
                         ),
-                        child: Column(
-                          spacing: 10,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                CustomText(
-                                  text: "Company Name",
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: CustomColors.blackColor,
-                                ),
-                                CustomText(
-                                  text: "18/01/2025",
-                                  fontSize: 14,
-                                  color: CustomColors.hintTextColor,
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                CustomText(
-                                  text: "Salary",
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: CustomColors.transactionCategoryColor,
-                                ),
-                                CustomText(
-                                  text: "+10000",
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: CustomColors.incomeColor,
-                                ),
-                              ],
-                            ),
-                          ],
+                        BlocBuilder<TransactionBloc, TransactionState>(
+                          builder: (context, state) {
+                            if (state is TransactionLoading) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            } else if (state is TransactionsLoaded) {
+                              final latestFiveTransactions = state.transactions
+                                  .toList()
+                                ..sort((a, b) => b.transactionDate
+                                    .compareTo(a.transactionDate));
+                              final lastFiveTransactions =
+                                  latestFiveTransactions.take(5).toList();
+
+                              return Column(
+                                children: lastFiveTransactions
+                                    .map((transaction) => Padding(
+                                          padding:
+                                              const EdgeInsets.only(bottom: 10),
+                                          child: TransactionCard(
+                                            onTap: () {},
+                                            companyName: transaction
+                                                        .transactionType ==
+                                                    'income'
+                                                ? transaction.receivedFrom
+                                                    .toString()
+                                                : transaction.paidTo.toString(),
+                                            date: DateFormat('dd/MM/yyyy')
+                                                .format(transaction
+                                                    .transactionDate),
+                                            category: transaction.category,
+                                            amount: transaction
+                                                .transactionAmount
+                                                .toString(),
+                                            isIncome:
+                                                transaction.transactionType ==
+                                                    'income',
+                                          ),
+                                        ))
+                                    .toList(),
+                              );
+                            } else if (state is TransactionError) {
+                              return Center(child: Text(state.message));
+                            } else {
+                              return const SizedBox();
+                            }
+                          },
                         ),
-                      ),
-                      Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                        decoration: BoxDecoration(
-                          color: CustomColors.whiteColor,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border(
-                            left: BorderSide(
-                                color: CustomColors.expenseColor, width: 6),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: CustomColors.hintTextColor,
-                              blurRadius: 4,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          spacing: 10,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                CustomText(
-                                  text: "Swiggy",
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: CustomColors.blackColor,
-                                ),
-                                CustomText(
-                                  text: "18/01/2025",
-                                  fontSize: 14,
-                                  color: CustomColors.hintTextColor,
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                CustomText(
-                                  text: "Food",
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: CustomColors.transactionCategoryColor,
-                                ),
-                                CustomText(
-                                  text: "+10000",
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: CustomColors.expenseColor,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                        decoration: BoxDecoration(
-                          color: CustomColors.whiteColor,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border(
-                            left: BorderSide(
-                                color: CustomColors.incomeColor, width: 6),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: CustomColors.hintTextColor,
-                              blurRadius: 4,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          spacing: 10,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                CustomText(
-                                  text: "Company Name",
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: CustomColors.blackColor,
-                                ),
-                                CustomText(
-                                  text: "18/01/2025",
-                                  fontSize: 14,
-                                  color: CustomColors.hintTextColor,
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                CustomText(
-                                  text: "Salary",
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: CustomColors.transactionCategoryColor,
-                                ),
-                                CustomText(
-                                  text: "+10000",
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: CustomColors.incomeColor,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                        decoration: BoxDecoration(
-                          color: CustomColors.whiteColor,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border(
-                            left: BorderSide(
-                                color: CustomColors.expenseColor, width: 6),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: CustomColors.hintTextColor,
-                              blurRadius: 4,
-                              offset: Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          spacing: 10,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                CustomText(
-                                  text: "Swiggy",
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: CustomColors.blackColor,
-                                ),
-                                CustomText(
-                                  text: "18/01/2025",
-                                  fontSize: 14,
-                                  color: CustomColors.hintTextColor,
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                CustomText(
-                                  text: "Food",
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: CustomColors.transactionCategoryColor,
-                                ),
-                                CustomText(
-                                  text: "+10000",
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: CustomColors.expenseColor,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                    ],
+                        const SizedBox(height: 10),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -336,11 +173,20 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
                 ),
-                CustomText(
-                  text: "Rs.5000",
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
-                )
+                BlocBuilder<TransactionBloc, TransactionState>(
+                    builder: (context, state) {
+                  String balanceAmount = "Rs.0";
+
+                  if (state is TransactionsLoaded) {
+                    balanceAmount =
+                        "Rs.${state.totalBalance.toStringAsFixed(2)}";
+                  }
+                  return CustomText(
+                    text: balanceAmount,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                  );
+                })
               ],
             ),
             SvgPicture.asset("assets/images/wallet_icon.svg"),
@@ -349,15 +195,25 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   }
 
   Widget _buildRowContainers(double width, double height) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        _buildSingleContainer(width, height, CustomColors.incomeColor,
-            AppString.income, "Rs.3000"),
-        _buildSingleContainer(width, height, CustomColors.expenseColor,
-            AppString.expense, "Rs.2000"),
-      ],
-    );
+    return BlocBuilder<TransactionBloc, TransactionState>(
+        builder: (context, state) {
+      String incomeAmount = "Rs.0";
+      String expenseAmount = "Rs.0";
+
+      if (state is TransactionsLoaded) {
+        incomeAmount = "Rs.${state.totalIncome.toStringAsFixed(2)}";
+        expenseAmount = "Rs.${state.totalExpense.toStringAsFixed(2)}";
+      }
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _buildSingleContainer(width, height, CustomColors.incomeColor,
+              AppString.income, incomeAmount),
+          _buildSingleContainer(width, height, CustomColors.expenseColor,
+              AppString.expense, expenseAmount),
+        ],
+      );
+    });
   }
 
   Widget _buildSingleContainer(double width, double height, Color textColor,

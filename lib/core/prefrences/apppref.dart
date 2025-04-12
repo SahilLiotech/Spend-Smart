@@ -15,6 +15,14 @@ class AppPref {
     await _preferences.setBool('isOnboardingDone', value);
   }
 
+  static String getUserId() {
+    return _preferences.getString('userId') ?? '';
+  }
+
+  static Future<void> setUserId(String value) {
+    return _preferences.setString('userId', value);
+  }
+
   static String getUserName() {
     return _preferences.getString('userName') ?? '';
   }

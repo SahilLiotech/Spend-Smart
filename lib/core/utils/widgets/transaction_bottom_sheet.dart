@@ -1,20 +1,20 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:intl/intl.dart';
+import 'package:spend_smart/core/prefrences/apppref.dart';
 import 'package:spend_smart/core/utils/custom_colors.dart';
+import 'package:spend_smart/core/utils/date_time_format_helper.dart';
 import 'package:spend_smart/core/utils/string.dart';
 import 'package:spend_smart/core/utils/widgets/button_widget.dart';
 import 'package:spend_smart/core/utils/widgets/category_bottom_sheet.dart';
 import 'package:spend_smart/core/utils/widgets/custom_text_widget.dart';
 import 'package:spend_smart/core/utils/widgets/custom_toast.dart';
-import 'package:spend_smart/features/transactions/data/models/transaction_model.dart';
+import 'package:spend_smart/core/validator/transaction_validator.dart';
 import 'package:spend_smart/features/transactions/presentation/cubit/transaction_type_cubit.dart';
 import 'package:spend_smart/features/category/domain/entities/category_entity.dart';
 import 'package:spend_smart/features/transactions/presentation/cubit/transaction_cubit.dart'
     as transaction_cubit;
-
+import '../../../features/transactions/domain/enitities/transaction_entity.dart';
 import '../../../features/transactions/presentation/bloc/transaction_bloc/transaction_bloc.dart';
 
 class CustomTransactionBottomSheet extends StatefulWidget {
@@ -46,34 +46,10 @@ class _CustomTransactionBottomSheetState
 
   final _formKey = GlobalKey<FormState>();
   CategoryEntity? selectedCategory;
-  bool _isFormValid = false;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _incomeAmountController.addListener(_validateForm);
-      _expenseAmountController.addListener(_validateForm);
-      _receivedFromController.addListener(_validateForm);
-      _paidToController.addListener(_validateForm);
-      _tagController.addListener(_validateForm);
-    });
-  }
-
-  void _validateForm() {
-    final isIncome =
-        context.read<TransactionTypeCubit>().state == TransactionType.income;
-    final bool hasAmount = isIncome
-        ? _incomeAmountController.text.isNotEmpty
-        : _expenseAmountController.text.isNotEmpty;
-    final bool hasSource = isIncome
-        ? _receivedFromController.text.isNotEmpty
-        : _paidToController.text.isNotEmpty;
-    final bool hasCategory = _tagController.text.isNotEmpty;
-
-    setState(() {
-      _isFormValid = hasAmount && hasSource && hasCategory;
-    });
   }
 
   @override
@@ -108,7 +84,7 @@ class _CustomTransactionBottomSheetState
       if (!ctx.mounted) return;
       ctx.read<transaction_cubit.TransactionCubit>().selectDate(picked);
       setState(() {
-        _dateController.text = DateFormat('dd/MM/yyyy').format(picked);
+        _dateController.text = TransactionDateTimeHelper.formatDate(picked);
       });
     }
   }
@@ -124,7 +100,8 @@ class _CustomTransactionBottomSheetState
       if (!ctx.mounted) return;
       ctx.read<transaction_cubit.TransactionCubit>().selectTime(picked);
       setState(() {
-        _timeController.text = picked.format(ctx);
+        _timeController.text =
+            TransactionDateTimeHelper.formatTime(picked, ctx);
       });
     }
   }
@@ -146,7 +123,6 @@ class _CustomTransactionBottomSheetState
               selectedCategory = category;
               _tagController.text = category.name;
             });
-            _validateForm();
           },
         );
       },
@@ -154,29 +130,17 @@ class _CustomTransactionBottomSheetState
   }
 
   void _submitTransaction() {
-    if (!_isFormValid) return;
+    if (!_formKey.currentState!.validate()) return;
 
     final transactionType = context.read<TransactionTypeCubit>().state;
     final isIncome = transactionType == TransactionType.income;
 
-    final dateFormat = DateFormat('dd/MM/yyyy');
-    final selectedDate = dateFormat.parse(_dateController.text);
-
-    final timeParts = _timeController.text.split(':');
-    final timeOfDay = TimeOfDay(
-      hour: int.parse(timeParts[0]),
-      minute: int.parse(timeParts[1].split(' ')[0]),
+    final completeDateTime = TransactionDateTimeHelper.combineDateTime(
+      _dateController.text,
+      _timeController.text,
     );
 
-    final completeDateTime = DateTime(
-      selectedDate.year,
-      selectedDate.month,
-      selectedDate.day,
-      timeOfDay.hour,
-      timeOfDay.minute,
-    );
-
-    final transaction = TransactionModel(
+    final transaction = TransactionEntity(
       category: selectedCategory?.name ?? 'Uncategorized',
       transactionType: isIncome ? 'income' : 'expense',
       transactionAmount: isIncome
@@ -190,16 +154,13 @@ class _CustomTransactionBottomSheetState
       updatedAt: DateTime.now(),
     );
 
-    final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
-
     context.read<TransactionBloc>().add(
           AddTransactionEvent(
-            userId: userId,
+            userId: AppPref.getUserId().toString(),
             transaction: transaction,
           ),
         );
 
-    debugPrint("Transaction added: $transaction");
     CustomToast.showSuccess(
         context, "Success", "Transaction added successfully");
 
@@ -209,9 +170,7 @@ class _CustomTransactionBottomSheetState
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<TransactionTypeCubit, TransactionType>(
-      listener: (context, state) {
-        _validateForm();
-      },
+      listener: (context, state) {},
       builder: (context, state) {
         bool isIncome = state == TransactionType.income;
 
@@ -315,12 +274,8 @@ class _CustomTransactionBottomSheetState
                         borderSide: BorderSide.none),
                   ),
                   keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter an amount';
-                    }
-                    return null;
-                  },
+                  validator: (value) =>
+                      TransactionValidator.validateAmount(value),
                 ),
                 TextFormField(
                   controller:
@@ -336,14 +291,8 @@ class _CustomTransactionBottomSheetState
                         borderRadius: BorderRadius.circular(8),
                         borderSide: BorderSide.none),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return isIncome
-                          ? 'Please enter who it was received from'
-                          : 'Please enter who it was paid to';
-                    }
-                    return null;
-                  },
+                  validator: (value) =>
+                      TransactionValidator.validateSource(value, isIncome),
                 ),
                 Row(
                   spacing: 10,
@@ -375,12 +324,8 @@ class _CustomTransactionBottomSheetState
                                     )
                                   : null,
                             ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please select a category';
-                              }
-                              return null;
-                            },
+                            validator: (value) =>
+                                TransactionValidator.validateCategory(value),
                           ),
                         ),
                       ),
@@ -408,6 +353,8 @@ class _CustomTransactionBottomSheetState
                                 borderSide: BorderSide.none),
                             suffixIcon: const Icon(Icons.calendar_today),
                           ),
+                          validator: (value) =>
+                              TransactionValidator.validateDate(value),
                         ),
                       ),
                     ),
@@ -429,6 +376,8 @@ class _CustomTransactionBottomSheetState
                                 borderSide: BorderSide.none),
                             suffixIcon: const Icon(Icons.access_time),
                           ),
+                          validator: (value) =>
+                              TransactionValidator.validateTime(value),
                         ),
                       ),
                     ),
@@ -458,7 +407,6 @@ class _CustomTransactionBottomSheetState
                           onTap: () {
                             _submitTransaction();
                           },
-                          // isDisabled: !_isFormValid,
                         ),
                       ),
                     );

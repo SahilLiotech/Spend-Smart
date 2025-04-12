@@ -110,4 +110,13 @@ class AppString {
   static const String paidTo = "Paid To?";
   static const String addTag = "Add Tag";
   static const String create = "Create";
+
+  static const String searchTransaction = "Search Transactions";
+  static const String all = "All";
+  static const String latest = "Latest";
+  static const String oldest = "Oldest";
+  static const String amountLowtoHigh = "Amount (Low to High)";
+  static const String amountHightoLow = "Amount (High to Low)";
+  static const String filterBy = "Filter by: ";
+  static const String sortyBy = "Sort by: ";
 }

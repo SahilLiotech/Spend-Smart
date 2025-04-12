@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:spend_smart/core/error/exception.dart';
 import 'package:spend_smart/core/prefrences/apppref.dart';
@@ -32,6 +33,7 @@ class AuthRepositoryImpl extends AuthRepository {
         image: '',
       );
 
+      AppPref.setUserId(user.id);
       AppPref.setUserName(userName);
       AppPref.setUserEmail(email);
 
@@ -73,6 +75,7 @@ class AuthRepositoryImpl extends AuthRepository {
           .doc(userCredential.user!.uid)
           .get();
 
+      AppPref.setUserId(userDoc.id);
       AppPref.setUserName(userDoc.data()!['userName']);
       AppPref.setUserEmail(email);
       return UserModel.fromMap(userDoc.data()!);
@@ -133,12 +136,16 @@ class AuthRepositoryImpl extends AuthRepository {
             .doc(user.uid)
             .set(newUser.toMap());
 
+        debugPrint("User ID WHILE LOGIN IN ::: ${user.uid}");
+
+        AppPref.setUserId(user.uid);
         AppPref.setUserName(user.displayName!);
         AppPref.setUserEmail(user.email!);
 
         return newUser;
       }
 
+      AppPref.setUserId(user.uid);
       AppPref.setUserName(user.displayName!);
       AppPref.setUserEmail(user.email!);
 

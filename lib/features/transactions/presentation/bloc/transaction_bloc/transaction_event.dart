@@ -10,7 +10,7 @@ sealed class TransactionEvent extends Equatable {
 class GetTransactionsEvent extends TransactionEvent {
   final String userId;
 
-  const GetTransactionsEvent(this.userId);
+  const GetTransactionsEvent({required this.userId});
 
   @override
   List<Object> get props => [userId];
