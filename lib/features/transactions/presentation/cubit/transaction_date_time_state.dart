@@ -1,15 +1,15 @@
-part of 'transaction_cubit.dart';
+part of 'transaction_date_time_cubit.dart';
 
-abstract class TransactionState extends Equatable {
-  const TransactionState();
+abstract class TransactionDateTimeState extends Equatable {
+  const TransactionDateTimeState();
 
   @override
   List<Object?> get props => [];
 }
 
-class TransactionInitial extends TransactionState {}
+class TransactionInitial extends TransactionDateTimeState {}
 
-class TransactionDateSelected extends TransactionState {
+class TransactionDateSelected extends TransactionDateTimeState {
   final String selectedDate;
 
   const TransactionDateSelected(this.selectedDate);
@@ -18,7 +18,7 @@ class TransactionDateSelected extends TransactionState {
   List<Object?> get props => [selectedDate];
 }
 
-class TransactionTimeSelected extends TransactionState {
+class TransactionTimeSelected extends TransactionDateTimeState {
   final String selectedTime;
 
   const TransactionTimeSelected(this.selectedTime);

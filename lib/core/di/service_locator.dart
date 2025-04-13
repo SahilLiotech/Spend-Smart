@@ -3,6 +3,7 @@ import 'package:spend_smart/core/services/firebase_service.dart';
 import 'package:spend_smart/features/category/domain/usecases/get_category_usecase.dart';
 import 'package:spend_smart/features/transactions/data/repository/transaction_repository_imp.dart';
 import 'package:spend_smart/features/transactions/presentation/bloc/transaction_bloc/transaction_bloc.dart';
+import 'package:spend_smart/features/transactions/presentation/cubit/transaction_filter_cubit.dart';
 import 'package:spend_smart/features/transactions/presentation/cubit/transaction_type_cubit.dart';
 import 'package:spend_smart/features/auth/data/auth_repository_impl.dart';
 import 'package:spend_smart/features/auth/domain/auth_repository.dart';
@@ -15,7 +16,7 @@ import 'package:spend_smart/features/category/data/category_repository_imp.dart'
 import 'package:spend_smart/features/category/domain/repositories/category_repository.dart';
 import 'package:spend_smart/features/category/presentation/cubit/category_cubit.dart';
 import 'package:spend_smart/features/main/presentation/bloc/navigation_cubit.dart';
-import 'package:spend_smart/features/transactions/presentation/cubit/transaction_cubit.dart';
+import 'package:spend_smart/features/transactions/presentation/cubit/transaction_date_time_cubit.dart';
 
 import '../../features/transactions/data/datasources/transaction_remote_datasource.dart';
 import '../../features/transactions/data/datasources/transaction_remote_datasource_impl.dart';
@@ -108,7 +109,8 @@ void serviceLocator() {
   sl.registerFactory<CategoryCubit>(
       () => CategoryCubit(getCategoriesUseCase: sl()));
 
-  sl.registerFactory<TransactionCubit>(() => TransactionCubit());
+  sl.registerFactory<TransactionDateTimeCubit>(
+      () => TransactionDateTimeCubit());
 
   sl.registerFactory<TransactionBloc>(() => TransactionBloc(
         getTransactionsUseCase: sl(),
@@ -116,4 +118,8 @@ void serviceLocator() {
         updateTransactionUseCase: sl(),
         deleteTransactionUseCase: sl(),
       ));
+
+  sl.registerFactory<TransactionFilterCubit>(
+    () => TransactionFilterCubit(),
+  );
 }

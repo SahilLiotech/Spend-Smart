@@ -12,7 +12,7 @@ import 'package:spend_smart/core/utils/widgets/custom_toast.dart';
 import 'package:spend_smart/core/validator/transaction_validator.dart';
 import 'package:spend_smart/features/transactions/presentation/cubit/transaction_type_cubit.dart';
 import 'package:spend_smart/features/category/domain/entities/category_entity.dart';
-import 'package:spend_smart/features/transactions/presentation/cubit/transaction_cubit.dart'
+import 'package:spend_smart/features/transactions/presentation/cubit/transaction_date_time_cubit.dart'
     as transaction_cubit;
 import '../../../features/transactions/domain/enitities/transaction_entity.dart';
 import '../../../features/transactions/presentation/bloc/transaction_bloc/transaction_bloc.dart';
@@ -82,7 +82,7 @@ class _CustomTransactionBottomSheetState
 
     if (picked != null) {
       if (!ctx.mounted) return;
-      ctx.read<transaction_cubit.TransactionCubit>().selectDate(picked);
+      ctx.read<transaction_cubit.TransactionDateTimeCubit>().selectDate(picked);
       setState(() {
         _dateController.text = TransactionDateTimeHelper.formatDate(picked);
       });
@@ -98,7 +98,7 @@ class _CustomTransactionBottomSheetState
 
     if (picked != null) {
       if (!ctx.mounted) return;
-      ctx.read<transaction_cubit.TransactionCubit>().selectTime(picked);
+      ctx.read<transaction_cubit.TransactionDateTimeCubit>().selectTime(picked);
       setState(() {
         _timeController.text =
             TransactionDateTimeHelper.formatTime(picked, ctx);

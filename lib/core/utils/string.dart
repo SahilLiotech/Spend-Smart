@@ -119,4 +119,5 @@ class AppString {
   static const String amountHightoLow = "Amount (High to Low)";
   static const String filterBy = "Filter by: ";
   static const String sortyBy = "Sort by: ";
+  static const String resetAllFilter = "Reset All Filters";
 }
