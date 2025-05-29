@@ -23,8 +23,7 @@
 - 💻 **Flutter** — Cross-platform app framework  
 - 🧠 **BLoC Cubit** — State management  
 - 🧱 **Clean Architecture** — Modular and scalable codebase  
-- 🔥 **Firebase** — Auth, Firestore, and Storage  
-- 📦 **Hive** (planned) — For local caching  
+- 🔥 **Firebase** — Auth, Firestore, and Storage 
 - 🧾 **PDF** — Report generation  
 
 ---
